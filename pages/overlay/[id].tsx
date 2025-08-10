@@ -27,6 +27,12 @@ function Overlay() {
     <div>
       <h1>{data.name}</h1>
       <p>Sistema: {data.system}</p>
+      <h2>Personagens</h2>
+      <ul>
+        {data.characters.map((character) => (
+          <li key={character.id}>{character.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }

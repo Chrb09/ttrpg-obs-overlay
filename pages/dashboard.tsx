@@ -4,50 +4,79 @@ import useSWR, { mutate } from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+// Interfaces atualizadas para refletir a estrutura do JSON
+interface Stat {
+  name: string;
+  value: number;
+  min: number;
+  max: number;
+}
+
+interface Character {
+  id: number;
+  name: string;
+  stats: Stat[];
+}
+
 interface Campanha {
-  id: string;
+  id: number;
   name: string;
   system: string;
+  characters: Character[];
 }
 
 export default function Dashboard() {
-  const { data, error, isLoading } = useSWR("/api/campanhas", fetcher);
+  const { data: campanhas, error, isLoading } = useSWR<Campanha[]>("/api/campanhas", fetcher);
   const [selectedCampaign, setSelectedCampaign] = useState<Campanha | null>(null);
-  const [formData, setFormData] = useState({ id: "", name: "", system: "" });
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
+
+  // Estado para o formulário de stats
+  const [characterStats, setCharacterStats] = useState<Stat[]>([]);
 
   if (error) return <div>Falha ao carregar as campanhas.</div>;
   if (isLoading) return <div>Carregando campanhas...</div>;
-  if (!data) return <div>Nenhuma campanha encontrada.</div>;
+  if (!campanhas) return <div>Nenhuma campanha encontrada.</div>;
 
-  // Função para pré-preencher o formulário
+  // Função para selecionar uma campanha
   const handleSelectCampaign = (campanha: Campanha) => {
     setSelectedCampaign(campanha);
-    setFormData({ id: campanha.id, name: campanha.name, system: campanha.system });
+    setSelectedCharacter(null); // Limpa o personagem quando a campanha muda
   };
 
-  // Função para controlar a mudança nos inputs do formulário
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // Função para selecionar um personagem
+  const handleSelectCharacter = (personagem: Character) => {
+    setSelectedCharacter(personagem);
+    // Preenche o estado do formulário com os stats do personagem
+    setCharacterStats(personagem.stats);
   };
 
-  // Função para enviar os dados atualizados
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Função para lidar com a mudança nos inputs de stats
+  const handleStatChange = (e: React.ChangeEvent<HTMLInputElement>, statName: string) => {
+    const newValue = parseInt(e.target.value);
+    setCharacterStats(
+      characterStats.map((stat) => (stat.name === statName ? { ...stat, value: isNaN(newValue) ? 0 : newValue } : stat))
+    );
+  };
+
+  // Função para enviar os stats atualizados
+  const handleSubmitStats = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await fetch("/api/campanhas/update", {
+    if (!selectedCampaign || !selectedCharacter) return;
+
+    const res = await fetch(`/api/campanhas/${selectedCampaign.id}/personagens/${selectedCharacter.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({ stats: characterStats }),
     });
 
     if (res.ok) {
-      console.log("Campanha atualizada com sucesso!");
-      setSelectedCampaign(null); // Limpa o formulário
-      // 'mutate' força o SWR a buscar a lista novamente, atualizando a dashboard em tempo real!
+      console.log("Stats do personagem atualizados com sucesso!");
+      setSelectedCharacter(null); // Limpa o formulário após salvar
+      // 'mutate' força o SWR a buscar a lista de campanhas novamente
       mutate("/api/campanhas");
     } else {
-      console.error("Erro ao atualizar a campanha.");
+      console.error("Erro ao atualizar os stats.");
     }
   };
 
@@ -58,37 +87,57 @@ export default function Dashboard() {
 
       {/* Lista de Campanhas */}
       <div>
-        <h2>Lista de Campanhas</h2>
+        <h2>Campanhas</h2>
         <ul>
-          {data.map((campanha: Campanha) => (
+          {campanhas.map((campanha) => (
             <li key={campanha.id} style={{ marginBottom: "10px" }}>
               {campanha.name} ({campanha.system})
               <button onClick={() => handleSelectCampaign(campanha)} style={{ marginLeft: "10px" }}>
-                Editar
+                Selecionar
               </button>
             </li>
           ))}
         </ul>
       </div>
-      {/* Formulário de Edição */}
+
+      {/* Seção de Personagens */}
       {selectedCampaign && (
-        <div style={{ marginBottom: "20px", border: "1px solid #ccc", padding: "10px" }}>
-          <h2>Editar {selectedCampaign.name}</h2>
-          <form onSubmit={handleSubmit}>
-            <input type="hidden" name="id" value={formData.id} />
+        <div style={{ marginTop: "30px", border: "1px solid #ccc", padding: "10px" }}>
+          <h2>Personagens de {selectedCampaign.name}</h2>
+          <ul>
+            {selectedCampaign.characters.map((personagem) => (
+              <li key={personagem.id}>
+                {personagem.name}
+                <button onClick={() => handleSelectCharacter(personagem)} style={{ marginLeft: "10px" }}>
+                  Editar Stats
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-            <div style={{ marginBottom: "10px" }}>
-              <label htmlFor="name">Nome:</label>
-              <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} />
-            </div>
-
-            <div style={{ marginBottom: "10px" }}>
-              <label htmlFor="system">Sistema:</label>
-              <input type="text" id="system" name="system" value={formData.system} onChange={handleChange} />
-            </div>
-
-            <button type="submit">Salvar Alterações</button>
-            <button type="button" onClick={() => setSelectedCampaign(null)}>
+      {/* Formulário de Edição de Stats */}
+      {selectedCharacter && (
+        <div style={{ marginTop: "30px", border: "1px solid #ccc", padding: "10px" }}>
+          <h2>Editando Stats de {selectedCharacter.name}</h2>
+          <form onSubmit={handleSubmitStats}>
+            {characterStats.map((stat) => (
+              <div key={stat.name} style={{ marginBottom: "10px" }}>
+                <label htmlFor={stat.name}>{stat.name}:</label>
+                <input
+                  type="number"
+                  id={stat.name}
+                  name={stat.name}
+                  value={stat.value}
+                  min={stat.min}
+                  max={stat.max}
+                  onChange={(e) => handleStatChange(e, stat.name)}
+                />
+              </div>
+            ))}
+            <button type="submit">Salvar Stats</button>
+            <button type="button" onClick={() => setSelectedCharacter(null)} style={{ marginLeft: "10px" }}>
               Cancelar
             </button>
           </form>

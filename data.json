@@ -2,17 +2,55 @@
   {
     "id": 1,
     "name": "Campanha Teste",
-    "system": "Ordem",
+    "system": "Ordem Paranormal",
     "characters": [
       {
-        "id": "char1",
+        "id": 1,
         "name": "Heroi",
-        "vida": 100,
-        "vidaMax": 100,
-        "mana": 50,
-        "manaMax": 50,
-        "sanidade": 75,
-        "sanidadeMax": 75
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 100,
+            "min": 0,
+            "max": 100
+          },
+          {
+            "name": "Esforço",
+            "value": 50,
+            "min": 0,
+            "max": 50
+          },
+          {
+            "name": "Sanidade",
+            "value": 75,
+            "min": 0,
+            "max": 75
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Heroi2",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 100,
+            "min": 0,
+            "max": 100
+          },
+          {
+            "name": "Esforço",
+            "value": 50,
+            "min": 0,
+            "max": 50
+          },
+          {
+            "name": "Sanidade",
+            "value": 0,
+            "min": 0,
+            "max": 75
+          }
+        ]
       }
     ]
   }

@@ -11,19 +11,16 @@
           {
             "name": "Vida",
             "value": 100,
-            "min": 0,
             "max": 100
           },
           {
             "name": "Esforço",
-            "value": 50,
-            "min": 0,
+            "value": -7,
             "max": 50
           },
           {
             "name": "Sanidade",
             "value": 75,
-            "min": 0,
             "max": 75
           }
         ]
@@ -35,20 +32,144 @@
           {
             "name": "Vida",
             "value": 100,
-            "min": 0,
             "max": 100
           },
           {
             "name": "Esforço",
             "value": 50,
-            "min": 0,
             "max": 50
           },
           {
             "name": "Sanidade",
-            "value": 0,
-            "min": 0,
+            "value": 75,
             "max": 75
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Mythic Amanda",
+    "system": "Mythic Bastionland",
+    "characters": [
+      {
+        "id": 1,
+        "name": "Bia",
+        "icon": "/2/war.jpg",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 11,
+            "max": 11,
+            "barColor": "#e69600"
+          },
+          {
+            "name": "Vigor",
+            "value": 10,
+            "max": 10,
+            "barColor": "#9bda37"
+          },
+          {
+            "name": "Espirito",
+            "value": 11,
+            "max": 11,
+            "barColor": "#0094e9"
+          },
+          {
+            "name": "Guarda",
+            "value": 2,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Stella",
+        "icon": "/2/ash.png",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 6,
+            "max": 6,
+            "barColor": "#e69600"
+          },
+          {
+            "name": "Vigor",
+            "value": 11,
+            "max": 11,
+            "barColor": "#9bda37"
+          },
+          {
+            "name": "Espirito",
+            "value": 9,
+            "max": 9,
+            "barColor": "#0094e9"
+          },
+          {
+            "name": "Guarda",
+            "value": 6,
+            "max": 6
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Jaime",
+        "icon": "/2/yu.png",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 13,
+            "max": 13,
+            "barColor": "#e69600"
+          },
+          {
+            "name": "Vigor",
+            "value": 14,
+            "max": 14,
+            "barColor": "#9bda37"
+          },
+          {
+            "name": "Espirito",
+            "value": 10,
+            "max": 10,
+            "barColor": "#0094e9"
+          },
+          {
+            "name": "Guarda",
+            "value": 3,
+            "max": 3
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Moss Dinn",
+        "icon": "/2/mosaic.jpg",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 8,
+            "max": 8,
+            "barColor": "#e69600"
+          },
+          {
+            "name": "Vigor",
+            "value": 14,
+            "max": 14,
+            "barColor": "#9bda37"
+          },
+          {
+            "name": "Espirito",
+            "value": 4,
+            "max": 4,
+            "barColor": "#0094e9"
+          },
+          {
+            "name": "Guarda",
+            "value": 4,
+            "max": 4
           }
         ]
       }

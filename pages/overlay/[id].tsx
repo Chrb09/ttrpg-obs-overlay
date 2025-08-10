@@ -1,49 +1,34 @@
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
+// pages/overlay/[id].tsx
 import { useRouter } from "next/router";
+import useSWR from "swr";
 
-export default function Overlay() {
-  const [character, setCharacter] = useState<any>({});
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+function Overlay() {
   const router = useRouter();
-  const { id } = router.query; // campanha ID
+  const { id } = router.query;
 
-  useEffect(() => {
-    if (!id) return;
+  const { data, error } = useSWR(id ? `/api/campanhas/${id}` : null, fetcher, { refreshInterval: 1000 });
+  /* 
+  const { data, error } = useSWR(
+  id ? `/api/campanhas/${id}` : null,
+  fetcher,
+  {
+    refreshInterval: 4000, // Seu intervalo de atualização
+    revalidateOnFocus: false, // Desativa a revalidação ao focar
+    revalidateOnReconnect: false, // Opcional: Desativa a revalidação ao reconectar
+  }
+);*/
 
-    async function fetchInitial() {
-      try {
-        const res = await fetch(`/api/characters?campaignId=${id}`);
-        if (!res.ok) throw new Error("Erro ao buscar dados");
-        const chars = await res.json();
-        const char = chars.find((c: any) => c.id === "char1");
-        if (char) setCharacter(char);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    fetchInitial();
-
-    fetch("/api/socket");
-    const socket = io({ path: "/api/socket_io" });
-
-    socket.on("characterUpdated", (data: { id: string }) => {
-      if (data.id === "char1") {
-        setCharacter((prev: any) => ({ ...prev, ...data }));
-      }
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [id]);
+  if (error) return <div>Falha ao carregar a campanha.</div>;
+  if (!data) return <div>Campanha não encontrada.</div>;
 
   return (
-    <div className="bg-black text-white p-4">
-      <h2 className="text-lg font-bold">Personagem - Campanha: {id}</h2>
-      <p>Vida: {character.vida ?? "N/A"}</p>
-      <p>Nome: {character.name ?? "N/A"}</p>
-      {/* Renderize outros atributos dinamicamente */}
+    <div>
+      <h1>{data.name}</h1>
+      <p>Sistema: {data.system}</p>
     </div>
   );
 }
+
+export default Overlay;

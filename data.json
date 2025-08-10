@@ -1,0 +1,19 @@
+{
+  "campaigns": [
+    {
+      "id": "test",
+      "name": "Campanha Teste",
+      "system": "Generic",
+      "stats": ["vida", "mana", "sanidade"],
+      "characters": [
+        {
+          "id": "char1",
+          "name": "Heroi",
+          "vida": 100,
+          "mana": 50,
+          "sanidade": 75
+        }
+      ]
+    }
+  ]
+}

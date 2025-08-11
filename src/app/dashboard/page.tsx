@@ -106,51 +106,61 @@ export default function Dashboard() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Dashboard de Campanhas</h1>
-      <hr />
-
-      {/* Lista de Campanhas */}
-      <div>
-        <h2>Campanhas</h2>
-        <ul>
-          {campanhas.map((campanha) => (
-            <li key={campanha.id} style={{ marginBottom: "10px" }}>
-              {campanha.name} ({campanha.system})
-              <button onClick={() => handleSelectCampaign(campanha)} style={{ marginLeft: "10px" }}>
-                Selecionar
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="container">
+      <h1 className="text-3xl font-bold text-rose-900 pb-[0.5em]">Dashboard de Campanhas</h1>
 
       {/* Seção de Personagens */}
-      {selectedCampaign && (
-        <div style={{ marginTop: "30px", border: "1px solid #ccc", padding: "10px" }}>
+      {selectedCampaign ? (
+        <div>
           <h2>Personagens de {selectedCampaign.name}</h2>
           <ul>
             {selectedCampaign.characters.map((personagem) => (
               <li key={personagem.id}>
                 {personagem.name}
-                <button onClick={() => handleSelectCharacter(personagem)} style={{ marginLeft: "10px" }}>
-                  Editar Stats
-                </button>
+                <button onClick={() => handleSelectCharacter(personagem)}>Editar Stats</button>
               </li>
             ))}
           </ul>
+
+          <button
+            className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer"
+            onClick={() => setSelectedCampaignId(null)}>
+            Voltar
+          </button>
+        </div>
+      ) : (
+        <div>
+          <div className="text-xl font-bold  pb-[0.5em]">Escolha a campanha:</div>
+          <div className="flex gap-4">
+            {campanhas.map((campanha) => (
+              <div key={campanha.id} className="flex flex-col items-center">
+                {campanha.system == "Ordem Paranormal" ? (
+                  <img src="ordem.png" className="size-26 rounded-full aspect-square object-contain bg-red-950" />
+                ) : null}
+                {campanha.system == "Mythic Bastionland" ? (
+                  <img src="ordem.png" className="size-26 rounded-full aspect-square object-contain bg-blue-950" />
+                ) : null}
+                <div className="text-lg font-bold">{campanha.name}</div>
+                <button
+                  className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer"
+                  onClick={() => handleSelectCampaign(campanha)}>
+                  Selecionar
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {/* Formulário de Edição de Stats */}
       {selectedCharacter && (
-        <div style={{ marginTop: "30px", border: "1px solid #ccc", padding: "10px" }}>
+        <div>
           <h2>Editando Stats de {selectedCharacter.name}</h2>
           <form onSubmit={handleSubmitStats}>
             {characterStats.map((stat) => (
-              <div key={stat.name} style={{ marginBottom: "20px", border: "1px solid #ddd", padding: "10px" }}>
+              <div key={stat.name}>
                 <strong>{stat.name}</strong>
-                <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                <div>
                   <div>
                     <label htmlFor={`${stat.name}-value`}>Valor:</label>
                     <input
@@ -176,7 +186,7 @@ export default function Dashboard() {
               </div>
             ))}
             <button type="submit">Salvar Stats</button>
-            <button type="button" onClick={() => setSelectedCharacterId(null)} style={{ marginLeft: "10px" }}>
+            <button type="button" onClick={() => setSelectedCharacterId(null)}>
               Cancelar
             </button>
           </form>

@@ -15,20 +15,20 @@ function Overlay() {
   if (!data) return <div>Campanha não encontrada.</div>;
 
   return (
-    <div className="flex flex-rol justify-between">
+    <div className="flex flex-rol justify-between flex-wrap gap-4">
       {data.characters.map((character) => (
-        <div key={character.id} className="flex flex-row items-center gap-4">
+        <div key={character.id} className="flex flex-row items-center gap-4 w-[22em]">
           <img src={character.icon} alt={character.name} className="size-32 aspect-square object-cover rounded-full" />
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full">
             <div className="text-xl font-bold">{character.name}</div>
             {character.stats.map((stat) =>
               stat.barColor ? (
-                <div className="h-6 w-48 bg-gray-200 rounded relative">
+                <div className="h-6 w-full bg-gray-200 relative">
                   <div className="z-12 absolute top-[50%] left-[50%] transform -translate-x-[50%] -translate-y-[50%]">
                     {stat.value + " / " + stat.max}
                   </div>
                   <div
-                    className={`h-6 rounded absolute top-0 left-0 z-0`}
+                    className={`h-6 absolute top-0 left-0 z-0`}
                     style={{ width: `${(stat.value / stat.max) * 100}%`, backgroundColor: stat.barColor }}
                   />
                 </div>

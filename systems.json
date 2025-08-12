@@ -1,0 +1,27 @@
+{
+  "Mythic Bastionland": {
+    "stats": [
+      { "name": "Clareza", "value": 0, "max": 0 },
+      { "name": "Vigor", "value": 0, "max": 0 },
+      { "name": "Espirito", "value": 0, "max": 0 },
+      { "name": "Guarda", "value": 0, "max": 0 },
+      { "name": "Armadura", "value": 0 },
+      { "name": "Gloria", "value": 0 }
+    ]
+  },
+  "Ordem Paranormal": {
+    "stats": [
+      { "name": "Vida", "value": 0, "max": 0 },
+      { "name": "Esforço", "value": 0, "max": 0 },
+      { "name": "Sanidade", "value": 0, "max": 0 },
+      { "name": "Nex", "value": 0 }
+    ]
+  },
+  "Tormenta": {
+    "stats": [
+      { "name": "Vida", "value": 0, "max": 0 },
+      { "name": "Mana", "value": 0, "max": 0 },
+      { "name": "Defesa", "value": 0, "max": 0 }
+    ]
+  }
+}

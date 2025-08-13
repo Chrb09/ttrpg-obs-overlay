@@ -3,6 +3,7 @@
     "id": 1,
     "name": "Mythic Amanda",
     "system": "Mythic Bastionland",
+    "date": "09/08/2025",
     "characters": [
       {
         "id": 1,
@@ -32,11 +33,16 @@
           },
           {
             "name": "Armadura",
-            "value": 6
+            "value": 6,
+            "max": 6
           },
           {
             "name": "Gloria",
             "value": 0
+          },
+          {
+            "name": "Fatigado",
+            "value": false
           }
         ]
       },
@@ -68,11 +74,16 @@
           },
           {
             "name": "Armadura",
-            "value": 1
+            "value": 1,
+            "max": 1
           },
           {
             "name": "Gloria",
             "value": 0
+          },
+          {
+            "name": "Fatigado",
+            "value": false
           }
         ]
       },
@@ -104,11 +115,16 @@
           },
           {
             "name": "Armadura",
-            "value": 6
+            "value": 6,
+            "max": 6
           },
           {
             "name": "Gloria",
             "value": 0
+          },
+          {
+            "name": "Fatigado",
+            "value": false
           }
         ]
       },
@@ -140,14 +156,40 @@
           },
           {
             "name": "Armadura",
-            "value": 6
+            "value": 6,
+            "max": 6
           },
           {
             "name": "Gloria",
             "value": 0
+          },
+          {
+            "name": "Fatigado",
+            "value": false
           }
         ]
       }
     ]
+  },
+  {
+    "id": 2,
+    "name": "teste",
+    "system": "Ordem Paranormal",
+    "date": "09/08/2025",
+    "characters": []
+  },
+  {
+    "id": 3,
+    "name": "teste2",
+    "system": "Tormenta",
+    "date": "09/08/2025",
+    "characters": []
+  },
+  {
+    "id": 4,
+    "name": "teste3",
+    "system": "Outro",
+    "date": "09/08/2025",
+    "characters": []
   }
 ]

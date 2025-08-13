@@ -3,6 +3,11 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import MythicColor from "./mythic";
 import "../../src/app/globals.css";
+import { Manufacturing_Consent } from "next/font/google";
+
+const manufacturingConsent = Manufacturing_Consent({
+  weight: "400",
+});
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -66,30 +71,81 @@ function Overlay() {
     case "Mythic Bastionland":
       return (
         <div className="flex flex-rol justify-between flex-wrap gap-8 p-4">
-          {data.characters.map((character) => (
-            <div key={character.id} className="relative w-[20em] h-[30em] outline-1 outline-red-500">
-              <img
-                src={character.icon}
-                alt={character.name}
-                className="w-[12em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%]"
-              />
-              <MythicColor
-                color={character.color !== "" ? character.color : undefined}
-                className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%]"
-              />
-              <img
-                src="/overlays/mythic/sombra.png"
-                className="w-[20em] mix-blend-multiply absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%]"
-              />
-              <img
-                src="/overlays/mythic/line.png"
-                className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%]"
-              />
-              <div className="absolute left-[50%] top-[59%] translate-x-[-50%] font-bold text-[1.5em]">
-                {character.name}
+          {data.characters.map((character) => {
+            const clarezaStat = character.stats.find((stat) => stat.name === "Clareza");
+            const vigorStat = character.stats.find((stat) => stat.name === "Vigor");
+            const espiritoStat = character.stats.find((stat) => stat.name === "Espirito");
+            const guardaStat = character.stats.find((stat) => stat.name === "Guarda");
+            const armaduraStat = character.stats.find((stat) => stat.name === "Armadura");
+            const gloriaStat = character.stats.find((stat) => stat.name === "Gloria");
+            const fatigadoStat = character.stats.find((stat) => stat.name === "Fatigado");
+            return (
+              <div key={character.id} className="relative w-[20em] h-[30em]">
+                <img
+                  src={character.icon}
+                  alt={character.name}
+                  className="w-[12em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] select-none"
+                />
+                <MythicColor
+                  color={character.color !== "" ? character.color : undefined}
+                  className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] select-none"
+                />
+                <img
+                  src="/overlays/mythic/sombra.png"
+                  className="w-[20em] mix-blend-multiply absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] select-none"
+                />
+                <img
+                  src="/overlays/mythic/line2.png"
+                  className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] select-none"
+                />
+                <div
+                  className={`absolute left-[50%] top-[62.5%] translate-y-[-50%] translate-x-[-50%] text-[1.5em] ${manufacturingConsent.className}`}>
+                  {character.name}
+                </div>
+                <div className="absolute left-[50%] top-[22%] font-bold text-[1.75em] translate-y-[-50%] translate-x-[-50%] text-center">
+                  {vigorStat?.value}
+                </div>
+                <div className="absolute left-[50%] top-[30.75%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[-50%] text-center">
+                  {vigorStat?.max}
+                </div>
+                <div className="absolute left-[24.5%] top-[30.95%] font-bold text-[1.3em] translate-y-[-50%] translate-x-[-50%] text-center">
+                  {clarezaStat?.value}
+                </div>
+                <div className="absolute left-[18%] top-[34.5%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[-50%] text-center">
+                  {clarezaStat?.max}
+                </div>
+                <div className="absolute right-[24.5%] top-[30.95%] font-bold text-[1.3em] translate-y-[-50%] translate-x-[50%] text-center">
+                  {espiritoStat?.value}
+                </div>
+                <div className="absolute right-[18%] top-[34.5%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[50%] text-center">
+                  {espiritoStat?.max}
+                </div>
+                <div className="absolute left-[50%] top-[72.4%] font-bold text-[1.85em] translate-y-[-50%] translate-x-[-50%] text-center">
+                  {gloriaStat?.value}
+                </div>
+                <div className="absolute left-[22.5%] top-[71.2%] font-bold text-[1.3em] translate-y-[-50%] translate-x-[-50%] text-center">
+                  {guardaStat?.value}
+                </div>
+                <div className="absolute left-[27.5%] top-[75%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[-50%] text-center">
+                  {guardaStat?.max}
+                </div>
+                <div className="absolute right-[22.5%] top-[71.2%] font-bold text-[1.3em] translate-y-[-50%] translate-x-[50%] text-center">
+                  {armaduraStat?.value}
+                </div>
+                <div className="absolute right-[27.5%] top-[75%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[50%] text-center">
+                  {armaduraStat?.max}
+                </div>
+                <div
+                  className={`absolute left-[20%] top-[77%] font-bold text-[1.2em] translate-y-[-50%] translate-x-[-50%] text-center ${manufacturingConsent.className}`}>
+                  GD
+                </div>
+                <div
+                  className={`absolute right-[20%] top-[77%] font-bold text-[1.6em] translate-y-[-50%] translate-x-[50%] text-center ${manufacturingConsent.className}`}>
+                  A
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       );
 

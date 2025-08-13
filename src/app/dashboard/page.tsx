@@ -22,6 +22,7 @@ interface Campanha {
   id: number;
   name: string;
   system: string;
+  date: string;
   characters: Character[];
 }
 
@@ -135,43 +136,59 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container">
-      <h1 className="text-3xl font-bold text-rose-900 pb-[0.5em]">Dashboard</h1>
-
-      {showAddCampaignForm ? (
+    <div className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[5em]">
+      <div className="flex justify-between">
+        <div className="text-2xl font-bold text-rose-700 pb-[0.5em]">Home</div>
+        <div className="text-3xl font-bold text-rose-700">TTRPG OBS Overlay</div>
+      </div>
+      {showAddCampaignForm && !selectedCampaignId && (
         <div>
-          <h2>Adicionar Nova Campanha</h2>
-          <form onSubmit={handleAddCampaign}>
-            <input
-              className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl"
-              type="text"
-              placeholder="Nome da Campanha"
-              value={newCampaignData.name}
-              onChange={(e) => setNewCampaignData({ ...newCampaignData, name: e.target.value })}
-              required
-            />
-            <select
-              className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl"
-              value={newCampaignData.system}
-              onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}>
-              {FIXED_SYSTEMS.map((system) => (
-                <option key={system} value={system}>
-                  {system}
-                </option>
-              ))}
-            </select>
-            <button className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer" type="submit">
-              Criar
-            </button>
-            <button
-              className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer"
-              type="button"
-              onClick={() => setShowAddCampaignForm(false)}>
-              Cancelar
-            </button>
+          <div className="absolute top-0 left-0 z-10 w-full h-full bg-[#4608097e]" />
+          <form
+            className="absolute top-[50%] left-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] z-20 flex flex-col gap-[1em] bg-white justify-center px-[1.5em] py-[2em] rounded-[1.5em]"
+            onSubmit={handleAddCampaign}>
+            <div className="flex flex-col gap-[0.2em]">
+              Nome da campanha
+              <input
+                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
+                type="text"
+                placeholder="Nome da Campanha"
+                value={newCampaignData.name}
+                onChange={(e) => setNewCampaignData({ ...newCampaignData, name: e.target.value })}
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-[0.2em]">
+              Sistema
+              <select
+                className="w-full border-rose-700 border-[0.15em] py-[0.45em] px-[0.5em] rounded-[0.85em]"
+                value={newCampaignData.system}
+                onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}>
+                {FIXED_SYSTEMS.map((system) => (
+                  <option key={system} value={system}>
+                    {system}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex justify-between gap-[0.75em]">
+              <button
+                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+                type="submit">
+                Criar
+              </button>
+              <button
+                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+                type="button"
+                onClick={() => setShowAddCampaignForm(false)}>
+                Cancelar
+              </button>
+            </div>
           </form>
         </div>
-      ) : showAddCharacterForm ? (
+      )}
+
+      {showAddCharacterForm && selectedCampaignId && (
         <div>
           <h2>Adicionar Personagem a {selectedCampaign?.name}</h2>
           <form onSubmit={handleAddCharacter}>
@@ -210,7 +227,8 @@ export default function Dashboard() {
             </button>
           </form>
         </div>
-      ) : selectedCampaignId ? (
+      )}
+      {selectedCampaignId ? (
         <div>
           <h2 className="text-xl font-bold text-rose-900 pb-[0.5em]">Personagens de {selectedCampaign?.name}</h2>
           <button
@@ -307,34 +325,67 @@ export default function Dashboard() {
           </div>
         </div>
       ) : (
-        <div>
-          <div className="text-xl font-bold pb-[0.5em]">Escolha a campanha:</div>
+        <div className="flex flex-col flex-wrap gap-[1em]">
+          <button
+            className="w-fit font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+            onClick={() => setShowAddCampaignForm(true)}>
+            + Nova Campanha
+          </button>
+          <div className="text-lg font-medium pb-[0.5em]">Escolha a campanha:</div>
           <div className="flex gap-4">
             {campanhas.map((campanha) => (
-              <div key={campanha.id} className="flex flex-col items-center">
-                {campanha.system === "Ordem Paranormal" && (
-                  <img src="ordem.png" className="size-26 rounded-full aspect-square object-contain bg-red-950" />
-                )}
-                {campanha.system === "Mythic Bastionland" && (
-                  <img src="mythic.png" className="size-26 rounded-full aspect-square object-contain bg-[#1E282F]" />
-                )}
-                {campanha.system === "Tormenta" && (
-                  <img src="tormenta.webp" className="size-26 rounded-full aspect-square object-contain bg-[#1E282F]" />
-                )}
-                <div className="text-lg font-bold">{campanha.name}</div>
-                <button
-                  className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer"
-                  onClick={() => handleSelectCampaign(campanha)}>
-                  Selecionar
-                </button>
+              <div
+                key={campanha.id}
+                className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em] ${
+                  campanha.system == "Ordem Paranormal"
+                    ? "bg-linear-to-t from-[#2C2D88] to-[#431A4B]"
+                    : campanha.system == "Mythic Bastionland"
+                    ? "bg-linear-to-t from-[#246569] to-[#1E212F]"
+                    : campanha.system == "Tormenta"
+                    ? "bg-linear-to-t from-[#A62124] to-[#460809]"
+                    : "bg-[#000000]"
+                }`}>
+                <img
+                  src={
+                    campanha.system == "Ordem Paranormal"
+                      ? "ordem.png"
+                      : campanha.system == "Mythic Bastionland"
+                      ? "mythic.png"
+                      : campanha.system == "Tormenta"
+                      ? "tormenta.webp"
+                      : "generico.png"
+                  }
+                  className="w-[15em] h-[8em] object-contain"
+                />
+                <div className="text-2xl font-bold py-[0.5em]">{campanha.name}</div>
+                <div className="flex flex-col gap-[0.2em] w-full">
+                  <div className="flex justify-between w-full">
+                    <div className="font-bold">ID:</div>
+                    {campanha.id}
+                  </div>
+                  <div className="flex justify-between w-full">
+                    <div className="font-bold">Jogadores:</div>
+                    {campanha.characters.length}
+                  </div>
+
+                  <div className="flex justify-between w-full">
+                    <div className="font-bold">Criação:</div>
+                    {campanha.date}
+                  </div>
+                </div>
+                <div className="flex gap-[0.5em]">
+                  <button
+                    className="w-fit font-bold bg-white px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-[#1E212F] cursor-pointer mt-4"
+                    onClick={() => handleSelectCampaign(campanha)}>
+                    Selecionar
+                  </button>
+                  <button className="w-fit font-bold border-2 border-white  p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4">
+                    <img src="copy.png" alt="" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
-          <button
-            className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer mt-4"
-            onClick={() => setShowAddCampaignForm(true)}>
-            Adicionar Nova Campanha
-          </button>
         </div>
       )}
     </div>

@@ -61,39 +61,36 @@ export default function Dashboard() {
     }
   };
 
-  const handleCharacterDataChange = (
-    e: React.ChangeEvent<HTMLInputElement> | any,
+  const handleCharacterDataChange = async (
+    newValue: any, // O novo valor (string ou número)
     charId: number,
     field: "name" | "icon" | "color" | "statValue" | "statMax",
     statName?: string
   ) => {
     const campanhaKey = "/api/campanhas";
+    let updatedChar: Character | null = null; // Crie uma variável para o personagem atualizado
+
     const updatedCampanhas = campanhas.map((campanha) => {
       if (campanha.id === selectedCampaignId) {
         const updatedCharacters = campanha.characters.map((char) => {
           if (char.id === charId) {
-            let updatedChar = { ...char };
             if (field === "statValue" || field === "statMax") {
+              // Lógica para stats
               const updatedStats = char.stats.map((stat) => {
                 if (stat.name === statName) {
-                  let newValue: any;
-                  if (typeof stat.value === "boolean") {
-                    newValue = e.target.checked;
-                  } else if (typeof stat.value === "number") {
-                    newValue = e.target ? (e.target.value === "" ? 0 : parseInt(e.target.value)) : e;
-                  } else {
-                    newValue = e.target ? e.target.value : e;
+                  let valueToUpdate = newValue;
+                  if (typeof stat.value === "number") {
+                    valueToUpdate = newValue === "" ? 0 : parseInt(newValue);
                   }
-                  return { ...stat, [field === "statValue" ? "value" : "max"]: newValue };
+                  return { ...stat, [field === "statValue" ? "value" : "max"]: valueToUpdate };
                 }
                 return stat;
               });
               updatedChar = { ...char, stats: updatedStats };
             } else {
-              updatedChar = { ...char, [field]: e.target.value };
+              // Lógica para nome, ícone e cor
+              updatedChar = { ...char, [field]: newValue };
             }
-
-            handleUpdateCharacter(updatedChar);
             return updatedChar;
           }
           return char;
@@ -102,6 +99,11 @@ export default function Dashboard() {
       }
       return campanha;
     });
+
+    // Aguarda a atualização no banco de dados antes de atualizar o cache local
+    if (updatedChar) {
+      await handleUpdateCharacter(updatedChar);
+    }
 
     mutate(campanhaKey, updatedCampanhas, false);
   };
@@ -280,18 +282,22 @@ export default function Dashboard() {
                       className="text-center font-bold text-2xl w-full focus:outline-none"
                       type="text"
                       value={personagem.name}
-                      onChange={(e) => handleCharacterDataChange(e, personagem.id, "name")}
+                      onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "name")}
+                      disabled
                     />
+
                     <input
-                      className="size-6 rounded-full absolute top-[6em] right-[1em] outline-2 outline-gray-900 cursor-pointer"
-                      type="color"
+                      className="text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
+                      type="text"
                       value={personagem.color}
-                      onChange={(e) => handleCharacterDataChange(e, personagem.id, "color")}
+                      onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "color")}
+                      hidden
                     />
+
                     <input
                       type="text"
                       value={personagem.icon}
-                      onChange={(e) => handleCharacterDataChange(e, personagem.id, "icon")}
+                      onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "icon")}
                       hidden
                     />
                   </div>
@@ -321,22 +327,20 @@ export default function Dashboard() {
                                 <div className="flex font-semibold z-20">
                                   <input
                                     className="w-[3ch] text-center focus:outline-none bg-transparent"
-                                    type="text"
-                                    pattern="[0-9]*" // Aceita apenas dígitos
-                                    inputMode="numeric" // Mostra teclado numérico em dispositivos móveis
+                                    type="number"
                                     value={stat.value}
                                     onChange={(e) =>
-                                      handleCharacterDataChange(e, personagem.id, "statValue", stat.name)
+                                      handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
                                     }
                                   />
                                   /
                                   <input
                                     className="w-[3ch] text-center focus:outline-none bg-transparent"
-                                    type="text"
-                                    pattern="[0-9]*"
-                                    inputMode="numeric"
+                                    type="number"
                                     value={stat.max}
-                                    onChange={(e) => handleCharacterDataChange(e, personagem.id, "statMax", stat.name)}
+                                    onChange={(e) =>
+                                      handleCharacterDataChange(e.target.value, personagem.id, "statMax", stat.name)
+                                    }
                                   />
                                 </div>
                                 <button
@@ -363,11 +367,11 @@ export default function Dashboard() {
                               {typeof stat.value === "number" && (
                                 <input
                                   className="w-[3ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
-                                  type="text"
-                                  pattern="[0-9]*"
-                                  inputMode="numeric"
+                                  type="number"
                                   value={stat.value}
-                                  onChange={(e) => handleCharacterDataChange(e, personagem.id, "statValue", stat.name)}
+                                  onChange={(e) =>
+                                    handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
+                                  }
                                 />
                               )}
                               {typeof stat.value === "string" && (
@@ -375,7 +379,9 @@ export default function Dashboard() {
                                   className="text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
                                   type="text"
                                   value={stat.value}
-                                  onChange={(e) => handleCharacterDataChange(e, personagem.id, "statValue", stat.name)}
+                                  onChange={(e) =>
+                                    handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
+                                  }
                                 />
                               )}
                               {typeof stat.value === "boolean" && (
@@ -383,7 +389,9 @@ export default function Dashboard() {
                                   className="size-4 cursor-pointer"
                                   type="checkbox"
                                   checked={stat.value}
-                                  onChange={(e) => handleCharacterDataChange(e, personagem.id, "statValue", stat.name)}
+                                  onChange={(e) =>
+                                    handleCharacterDataChange(e.target.checked, personagem.id, "statValue", stat.name)
+                                  }
                                 />
                               )}
                             </div>

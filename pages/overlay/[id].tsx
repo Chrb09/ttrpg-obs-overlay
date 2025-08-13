@@ -1,6 +1,7 @@
 // pages/overlay/[id].tsx
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import MythicColor from "./mythic";
 import "../../src/app/globals.css";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -16,6 +17,7 @@ interface Character {
   id: number;
   name: string;
   icon: string;
+  color: string;
   stats: Stat[];
 }
 
@@ -63,23 +65,29 @@ function Overlay() {
 
     case "Mythic Bastionland":
       return (
-        <div className="flex flex-rol justify-between flex-wrap gap-8 p-4 bg-gray-800 text-white">
+        <div className="flex flex-rol justify-between flex-wrap gap-8 p-4">
           {data.characters.map((character) => (
-            <div key={character.id} className="flex flex-col items-center gap-2 p-4 border rounded-lg">
+            <div key={character.id} className="relative w-[20em] h-[30em] outline-1 outline-red-500">
               <img
                 src={character.icon}
                 alt={character.name}
-                className="size-24 aspect-square object-cover rounded-full border-2"
+                className="w-[12em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%]"
               />
-              <div className="font-serif text-2xl font-bold">{character.name}</div>
-              <ul className="list-disc list-inside">
-                {character.stats.map((stat) => (
-                  <li key={stat.name}>
-                    <strong>{stat.name}:</strong> {stat.value}
-                    {stat.max ? ` / ${stat.max}` : ""}
-                  </li>
-                ))}
-              </ul>
+              <MythicColor
+                color={character.color !== "" ? character.color : undefined}
+                className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%]"
+              />
+              <img
+                src="/overlays/mythic/sombra.png"
+                className="w-[20em] mix-blend-multiply absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%]"
+              />
+              <img
+                src="/overlays/mythic/line.png"
+                className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%]"
+              />
+              <div className="absolute left-[50%] top-[59%] translate-x-[-50%] font-bold text-[1.5em]">
+                {character.name}
+              </div>
             </div>
           ))}
         </div>

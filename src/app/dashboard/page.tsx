@@ -14,6 +14,7 @@ interface Character {
   id: number;
   name: string;
   icon: string;
+  color: string;
   stats: Stat[];
 }
 
@@ -31,81 +32,74 @@ export default function Dashboard() {
   const { data: campanhas, error, isLoading } = useSWR<Campanha[]>("/api/campanhas", fetcher);
 
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
-  const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
 
-  // Estados para os novos formulários
   const [showAddCampaignForm, setShowAddCampaignForm] = useState(false);
   const [showAddCharacterForm, setShowAddCharacterForm] = useState(false);
   const [newCampaignData, setNewCampaignData] = useState({ name: "", system: FIXED_SYSTEMS[0] });
-  const [newCharacterData, setNewCharacterData] = useState({ name: "", icon: "" });
-
-  const [characterStats, setCharacterStats] = useState<Stat[]>([]);
+  const [newCharacterData, setNewCharacterData] = useState({ name: "", icon: "", color: "#ffffff" });
 
   const selectedCampaign = campanhas?.find((c) => c.id === selectedCampaignId) || null;
-  const selectedCharacter = selectedCampaign?.characters.find((char) => char.id === selectedCharacterId) || null;
-
-  useEffect(() => {
-    if (selectedCharacter) {
-      setCharacterStats(selectedCharacter.stats);
-    }
-  }, [selectedCharacter]);
 
   if (error) return <div>Falha ao carregar as campanhas.</div>;
   if (isLoading) return <div>Carregando campanhas...</div>;
   if (!campanhas) return <div>Nenhuma campanha encontrada.</div>;
 
-  const handleSelectCampaign = (campanha: Campanha) => {
-    setSelectedCampaignId(campanha.id);
-    setSelectedCharacterId(null);
-    setShowAddCharacterForm(false);
-  };
-
-  const handleSelectCharacter = (personagem: Character) => {
-    setSelectedCharacterId(personagem.id);
-  };
-
-  const handleStatChange = (e: React.ChangeEvent<HTMLInputElement>, statName: string, field: "value" | "max") => {
-    const newValue = parseInt(e.target.value);
-    setCharacterStats(
-      characterStats.map((stat) =>
-        stat.name === statName ? { ...stat, [field]: isNaN(newValue) ? 0 : newValue } : stat
-      )
-    );
-  };
-
-  const handleSubmitStats = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!selectedCampaignId || !selectedCharacterId) return;
-
-    const key = "/api/campanhas";
-
-    const updatedCampanhas = campanhas.map((c) => {
-      if (c.id === selectedCampaignId) {
-        const updatedCharacters = c.characters.map((char) => {
-          if (char.id === selectedCharacterId) {
-            return { ...char, stats: characterStats };
+  // Função para lidar com a mudança dos dados do personagem
+  const handleCharacterDataChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    charId: number,
+    field: "name" | "icon" | "color" | "statValue" | "statMax",
+    statName?: string
+  ) => {
+    const campanhaKey = "/api/campanhas";
+    const updatedCampanhas = campanhas.map((campanha) => {
+      if (campanha.id === selectedCampaignId) {
+        const updatedCharacters = campanha.characters.map((char) => {
+          if (char.id === charId) {
+            if (field === "statValue" || field === "statMax") {
+              const updatedStats = char.stats.map((stat) => {
+                if (stat.name === statName) {
+                  const newValue = parseInt(e.target.value);
+                  return { ...stat, [field === "statValue" ? "value" : "max"]: isNaN(newValue) ? 0 : newValue };
+                }
+                return stat;
+              });
+              return { ...char, stats: updatedStats };
+            } else {
+              return { ...char, [field]: e.target.value };
+            }
           }
           return char;
         });
-        return { ...c, characters: updatedCharacters };
+        return { ...campanha, characters: updatedCharacters };
       }
-      return c;
+      return campanha;
     });
 
-    mutate(key, updatedCampanhas, false);
-    setSelectedCharacterId(null);
+    mutate(campanhaKey, updatedCampanhas, false);
+  };
 
-    const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/${selectedCharacterId}`, {
+  // Função para salvar as alterações do personagem
+  const handleSubmitCharacter = async (e: React.FormEvent<HTMLFormElement>, char: Character) => {
+    e.preventDefault();
+
+    if (!selectedCampaignId) return;
+
+    const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/${char.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ stats: characterStats }),
+      body: JSON.stringify(char),
     });
 
     if (!res.ok) {
-      console.error("Erro ao atualizar os stats.");
-      mutate(key);
+      console.error("Erro ao atualizar o personagem.");
+      mutate("/api/campanhas");
     }
+  };
+
+  const handleSelectCampaign = (campanha: Campanha) => {
+    setSelectedCampaignId(campanha.id);
+    setShowAddCharacterForm(false);
   };
 
   const handleAddCampaign = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -117,7 +111,6 @@ export default function Dashboard() {
     });
 
     if (res.ok) {
-      console.log("Campanha adicionada com sucesso!");
       setShowAddCampaignForm(false);
       setNewCampaignData({ name: "", system: FIXED_SYSTEMS[0] });
       mutate("/api/campanhas");
@@ -135,9 +128,8 @@ export default function Dashboard() {
     });
 
     if (res.ok) {
-      console.log("Personagem adicionado com sucesso!");
       setShowAddCharacterForm(false);
-      setNewCharacterData({ name: "", icon: "" });
+      setNewCharacterData({ name: "", icon: "", color: "#ffffff" });
       mutate("/api/campanhas");
     }
   };
@@ -146,7 +138,6 @@ export default function Dashboard() {
     <div className="container">
       <h1 className="text-3xl font-bold text-rose-900 pb-[0.5em]">Dashboard</h1>
 
-      {/* Lógica para renderizar o formulário de adicionar campanha */}
       {showAddCampaignForm ? (
         <div>
           <h2>Adicionar Nova Campanha</h2>
@@ -180,56 +171,7 @@ export default function Dashboard() {
             </button>
           </form>
         </div>
-      ) : selectedCharacterId ? (
-        /* Lógica para renderizar o formulário de edição de stats */
-        <div>
-          <h2 className="text-xl font-bold text-rose-900 pb-[0.5em]">Editando Stats de {selectedCharacter?.name}</h2>
-          <form onSubmit={handleSubmitStats}>
-            {characterStats.map((stat) => (
-              <div key={stat.name}>
-                <strong>{stat.name}</strong>
-                <div className="flex flex-col gap-2">
-                  <div className="flex gap-2">
-                    <label htmlFor={`${stat.name}-value`}>Valor:</label>
-                    <input
-                      className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl"
-                      type="number"
-                      id={`${stat.name}-value`}
-                      name={`${stat.name}-value`}
-                      value={stat.value}
-                      onChange={(e) => handleStatChange(e, stat.name, "value")}
-                      max={stat.max}
-                    />
-                  </div>
-                  {stat.max !== undefined && (
-                    <div className="flex gap-2">
-                      <label htmlFor={`${stat.name}-max`}>Máximo:</label>
-                      <input
-                        className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl"
-                        type="number"
-                        id={`${stat.name}-max`}
-                        name={`${stat.name}-max`}
-                        value={stat.max}
-                        onChange={(e) => handleStatChange(e, stat.name, "max")}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-            <button className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer" type="submit">
-              Salvar Stats
-            </button>
-            <button
-              className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer"
-              type="button"
-              onClick={() => setSelectedCharacterId(null)}>
-              Voltar
-            </button>
-          </form>
-        </div>
       ) : showAddCharacterForm ? (
-        /* Lógica para renderizar o formulário de adicionar personagem */
         <div>
           <h2>Adicionar Personagem a {selectedCampaign?.name}</h2>
           <form onSubmit={handleAddCharacter}>
@@ -244,9 +186,17 @@ export default function Dashboard() {
             <input
               className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl"
               type="text"
-              placeholder="Caminho do Ícone (ex: /1/heroi.jpg)"
+              placeholder="Caminho do Ícone"
               value={newCharacterData.icon}
               onChange={(e) => setNewCharacterData({ ...newCharacterData, icon: e.target.value })}
+              required
+            />
+            <input
+              className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl"
+              type="color"
+              placeholder="Cor do Personagem"
+              value={newCharacterData.color}
+              onChange={(e) => setNewCharacterData({ ...newCharacterData, color: e.target.value })}
               required
             />
             <button className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer" type="submit">
@@ -261,34 +211,102 @@ export default function Dashboard() {
           </form>
         </div>
       ) : selectedCampaignId ? (
-        /* Lógica para renderizar a lista de personagens */
         <div>
           <h2 className="text-xl font-bold text-rose-900 pb-[0.5em]">Personagens de {selectedCampaign?.name}</h2>
-          <div className="py-6">
-            {selectedCampaign?.characters.map((personagem) => (
-              <div className="flex flex-col" key={personagem.id}>
-                {personagem.name}
-                <button
-                  className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer"
-                  onClick={() => handleSelectCharacter(personagem)}>
-                  Editar
-                </button>
-              </div>
-            ))}
-          </div>
           <button
             className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer"
             onClick={() => setSelectedCampaignId(null)}>
-            Voltar
+            Voltar para Campanhas
           </button>
           <button
             className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer"
             onClick={() => setShowAddCharacterForm(true)}>
             Adicionar Novo Personagem
           </button>
+          <div className="py-6 flex flex-col gap-8">
+            {selectedCampaign?.characters.map((personagem) => (
+              <form
+                key={personagem.id}
+                onSubmit={(e) => handleSubmitCharacter(e, personagem)}
+                className="p-4 border rounded-lg shadow-md">
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={personagem.icon}
+                    alt={personagem.name}
+                    className="size-20 aspect-square object-cover rounded-full"
+                  />
+                  <div className="flex-1">
+                    <div className="flex flex-col gap-2">
+                      <label>
+                        Nome:
+                        <input
+                          className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl"
+                          type="text"
+                          value={personagem.name}
+                          onChange={(e) => handleCharacterDataChange(e, personagem.id, "name")}
+                        />
+                      </label>
+                      <label>
+                        Ícone (URL):
+                        <input
+                          className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl"
+                          type="text"
+                          value={personagem.icon}
+                          onChange={(e) => handleCharacterDataChange(e, personagem.id, "icon")}
+                        />
+                      </label>
+                      <label className="flex items-center">
+                        Cor:
+                        <input
+                          className="w-8 h-8 rounded-full ml-2"
+                          type="color"
+                          value={personagem.color}
+                          onChange={(e) => handleCharacterDataChange(e, personagem.id, "color")}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <h3 className="font-bold mb-2">Stats:</h3>
+                <div className="flex flex-col gap-2">
+                  {personagem.stats.map((stat) => (
+                    <div key={stat.name} className="flex gap-4 items-center">
+                      <strong className="w-24">{stat.name}:</strong>
+                      <div className="flex-1 flex gap-2">
+                        <label>
+                          Valor:
+                          <input
+                            className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl w-24"
+                            type="number"
+                            value={stat.value}
+                            onChange={(e) => handleCharacterDataChange(e, personagem.id, "statValue", stat.name)}
+                          />
+                        </label>
+                        {stat.max !== undefined && (
+                          <label>
+                            Máximo:
+                            <input
+                              className="border-rose-900 py-[0.1em] px-[0.5em] mx-[0.5em] border-[0.15em] rounded-2xl w-24"
+                              type="number"
+                              value={stat.max}
+                              onChange={(e) => handleCharacterDataChange(e, personagem.id, "statMax", stat.name)}
+                            />
+                          </label>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  className="w-fit bg-rose-900 px-3 py-1 rounded-2xl text-white cursor-pointer mt-4"
+                  type="submit">
+                  Salvar Alterações
+                </button>
+              </form>
+            ))}
+          </div>
         </div>
       ) : (
-        /* Lógica para renderizar a lista de campanhas */
         <div>
           <div className="text-xl font-bold pb-[0.5em]">Escolha a campanha:</div>
           <div className="flex gap-4">

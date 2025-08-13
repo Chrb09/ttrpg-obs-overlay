@@ -8,6 +8,7 @@
         "id": 1,
         "name": "Bia",
         "icon": "/1/war.jpg",
+        "color": "#5689D4",
         "stats": [
           {
             "name": "Clareza",
@@ -43,6 +44,7 @@
         "id": 2,
         "name": "Stella",
         "icon": "/1/ash.png",
+        "color": "#87837F",
         "stats": [
           {
             "name": "Clareza",
@@ -66,7 +68,7 @@
           },
           {
             "name": "Armadura",
-            "value": 6
+            "value": 1
           },
           {
             "name": "Gloria",
@@ -78,6 +80,7 @@
         "id": 3,
         "name": "Jaime",
         "icon": "/1/yu.png",
+        "color": "#BF8C6A",
         "stats": [
           {
             "name": "Clareza",
@@ -113,6 +116,7 @@
         "id": 4,
         "name": "Moss Dinn",
         "icon": "/1/mosaic.jpg",
+        "color": "#E35C24",
         "stats": [
           {
             "name": "Clareza",
@@ -141,103 +145,6 @@
           {
             "name": "Gloria",
             "value": 0
-          }
-        ]
-      },
-      {
-        "id": 5,
-        "name": "perso",
-        "icon": "1",
-        "stats": [
-          {
-            "name": "Clareza",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Vigor",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Espirito",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Guarda",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Armadura",
-            "value": 0
-          },
-          {
-            "name": "Gloria",
-            "value": 0
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "name": "UOUUUUUUU",
-    "system": "Ordem Paranormal",
-    "characters": [
-      {
-        "id": 1,
-        "name": "adsaasfsdv",
-        "icon": "asd",
-        "stats": [
-          {
-            "name": "Vida",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Esforço",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Sanidade",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Nex",
-            "value": 0
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": 3,
-    "name": "aw hell nah",
-    "system": "Tormenta",
-    "characters": [
-      {
-        "id": 1,
-        "name": "tormentinha",
-        "icon": "1",
-        "stats": [
-          {
-            "name": "Vida",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Mana",
-            "value": 0,
-            "max": 0
-          },
-          {
-            "name": "Defesa",
-            "value": 0,
-            "max": 0
           }
         ]
       }

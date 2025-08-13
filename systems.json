@@ -1,12 +1,13 @@
 {
   "Mythic Bastionland": {
     "stats": [
-      { "name": "Clareza", "value": 0, "max": 0 },
-      { "name": "Vigor", "value": 0, "max": 0 },
-      { "name": "Espirito", "value": 0, "max": 0 },
-      { "name": "Guarda", "value": 0, "max": 0 },
+      { "name": "Clareza", "value": 0, "max": 0, "color": "#D58E2B" },
+      { "name": "Vigor", "value": 0, "max": 0, "color": "#4FAC38" },
+      { "name": "Espirito", "value": 0, "max": 0, "color": "#50C8B4" },
+      { "name": "Guarda", "value": 0, "max": 0, "color": "#666666" },
       { "name": "Armadura", "value": 0 },
-      { "name": "Gloria", "value": 0 }
+      { "name": "Gloria", "value": 0 },
+      { "name": "Fatigado", "value": false }
     ]
   },
   "Ordem Paranormal": {

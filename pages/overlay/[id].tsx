@@ -133,7 +133,7 @@ function Overlay() {
                   {armaduraStat?.value}
                 </div>
                 <div className="absolute right-[27.5%] top-[75%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[50%] text-center">
-                  {armaduraStat?.max}
+                  {armaduraStat?.value}
                 </div>
                 <div
                   className={`absolute left-[20%] top-[77%] font-bold text-[1.2em] translate-y-[-50%] translate-x-[-50%] text-center ${manufacturingConsent.className}`}>

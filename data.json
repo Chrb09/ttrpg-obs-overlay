@@ -14,27 +14,31 @@
           {
             "name": "Clareza",
             "value": 11,
-            "max": 11
+            "max": 11,
+            "color": "#D58E2B"
           },
           {
             "name": "Vigor",
             "value": 10,
-            "max": 10
+            "max": 10,
+            "color": "#4FAC38"
           },
           {
             "name": "Espirito",
             "value": 11,
-            "max": 11
+            "max": 11,
+            "color": "#50C8B4"
           },
           {
             "name": "Guarda",
             "value": 2,
-            "max": 2
+            "max": 2,
+            "color": "#666666"
           },
           {
             "name": "Armadura",
             "value": 6,
-            "max": 6
+            "color": "#666666"
           },
           {
             "name": "Gloria",
@@ -55,27 +59,31 @@
           {
             "name": "Clareza",
             "value": 6,
-            "max": 6
+            "max": 6,
+            "color": "#D58E2B"
           },
           {
             "name": "Vigor",
             "value": 11,
-            "max": 11
+            "max": 11,
+            "color": "#4FAC38"
           },
           {
             "name": "Espirito",
             "value": 9,
-            "max": 9
+            "max": 9,
+            "color": "#50C8B4"
           },
           {
             "name": "Guarda",
             "value": 6,
-            "max": 6
+            "max": 6,
+            "color": "#666666"
           },
           {
             "name": "Armadura",
             "value": 1,
-            "max": 1
+            "color": "#666666"
           },
           {
             "name": "Gloria",
@@ -96,27 +104,31 @@
           {
             "name": "Clareza",
             "value": 13,
-            "max": 13
+            "max": 13,
+            "color": "#D58E2B"
           },
           {
             "name": "Vigor",
             "value": 14,
-            "max": 14
+            "max": 14,
+            "color": "#4FAC38"
           },
           {
             "name": "Espirito",
             "value": 10,
-            "max": 10
+            "max": 10,
+            "color": "#50C8B4"
           },
           {
             "name": "Guarda",
             "value": 3,
-            "max": 3
+            "max": 3,
+            "color": "#666666"
           },
           {
             "name": "Armadura",
             "value": 6,
-            "max": 6
+            "color": "#666666"
           },
           {
             "name": "Gloria",
@@ -137,27 +149,31 @@
           {
             "name": "Clareza",
             "value": 8,
-            "max": 8
+            "max": 8,
+            "color": "#D58E2B"
           },
           {
             "name": "Vigor",
             "value": 14,
-            "max": 14
+            "max": 14,
+            "color": "#4FAC38"
           },
           {
             "name": "Espirito",
             "value": 4,
-            "max": 4
+            "max": 4,
+            "color": "#50C8B4"
           },
           {
             "name": "Guarda",
             "value": 4,
-            "max": 4
+            "max": 4,
+            "color": "#666666"
           },
           {
             "name": "Armadura",
             "value": 6,
-            "max": 6
+            "color": "#666666"
           },
           {
             "name": "Gloria",

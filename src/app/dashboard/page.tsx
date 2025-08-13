@@ -46,9 +46,23 @@ export default function Dashboard() {
   if (isLoading) return <div>Carregando campanhas...</div>;
   if (!campanhas) return <div>Nenhuma campanha encontrada.</div>;
 
-  // Função para lidar com a mudança dos dados do personagem
+  const handleUpdateCharacter = async (updatedChar: Character) => {
+    if (!selectedCampaignId) return;
+
+    const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/${updatedChar.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedChar),
+    });
+
+    if (!res.ok) {
+      console.error("Erro ao atualizar o personagem.");
+      mutate("/api/campanhas");
+    }
+  };
+
   const handleCharacterDataChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement> | any,
     charId: number,
     field: "name" | "icon" | "color" | "statValue" | "statMax",
     statName?: string
@@ -58,18 +72,29 @@ export default function Dashboard() {
       if (campanha.id === selectedCampaignId) {
         const updatedCharacters = campanha.characters.map((char) => {
           if (char.id === charId) {
+            let updatedChar = { ...char };
             if (field === "statValue" || field === "statMax") {
               const updatedStats = char.stats.map((stat) => {
                 if (stat.name === statName) {
-                  const newValue = parseInt(e.target.value);
-                  return { ...stat, [field === "statValue" ? "value" : "max"]: isNaN(newValue) ? 0 : newValue };
+                  let newValue: any;
+                  if (typeof stat.value === "boolean") {
+                    newValue = e.target.checked;
+                  } else if (typeof stat.value === "number") {
+                    newValue = e.target ? (e.target.value === "" ? 0 : parseInt(e.target.value)) : e;
+                  } else {
+                    newValue = e.target ? e.target.value : e;
+                  }
+                  return { ...stat, [field === "statValue" ? "value" : "max"]: newValue };
                 }
                 return stat;
               });
-              return { ...char, stats: updatedStats };
+              updatedChar = { ...char, stats: updatedStats };
             } else {
-              return { ...char, [field]: e.target.value };
+              updatedChar = { ...char, [field]: e.target.value };
             }
+
+            handleUpdateCharacter(updatedChar);
+            return updatedChar;
           }
           return char;
         });
@@ -79,24 +104,6 @@ export default function Dashboard() {
     });
 
     mutate(campanhaKey, updatedCampanhas, false);
-  };
-
-  // Função para salvar as alterações do personagem
-  const handleSubmitCharacter = async (e: React.FormEvent<HTMLFormElement>, char: Character) => {
-    e.preventDefault();
-
-    if (!selectedCampaignId) return;
-
-    const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/${char.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(char),
-    });
-
-    if (!res.ok) {
-      console.error("Erro ao atualizar o personagem.");
-      mutate("/api/campanhas");
-    }
   };
 
   const handleSelectCampaign = (campanha: Campanha) => {
@@ -194,7 +201,7 @@ export default function Dashboard() {
           <div className="absolute top-0 left-0 z-10 w-full h-full bg-[#4608097e]" />
           <form
             className="absolute top-[50%] left-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] z-20 flex flex-col gap-[1em] bg-white justify-center px-[1.5em] py-[2em] rounded-[1.5em]"
-            onSubmit={handleAddCampaign}>
+            onSubmit={handleAddCharacter}>
             <div className="flex flex-col gap-[0.2em]">
               Nome do personagem
               <input
@@ -262,14 +269,13 @@ export default function Dashboard() {
           <div className="flex gap-4">
             <div className=" flex flex-wrap gap-[2em]">
               {selectedCampaign?.characters.map((personagem) => (
-                <form key={personagem.id} onSubmit={(e) => handleSubmitCharacter(e, personagem)} className="flex">
+                <div key={personagem.id} className="flex">
                   <div className="flex flex-col items-center gap-[0.5em] w-[9.5em] px-[1em] relative">
                     <img
                       src={personagem.icon}
                       alt={personagem.name}
                       className="size-[7.5em] aspect-square object-cover rounded-full"
                     />
-
                     <input
                       className="text-center font-bold text-2xl w-full focus:outline-none"
                       type="text"
@@ -294,18 +300,30 @@ export default function Dashboard() {
                       {personagem.stats.map((stat) => {
                         if (stat.max !== undefined) {
                           return (
-                            <div key={stat.name} className="flex items-center ">
+                            <div key={stat.name} className="flex gap-[0.5em] items-center ">
                               <div className="min-w-[4em] w-fit font-bold">{stat.name}</div>
                               <div className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
                                 <div
                                   className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
-                                  style={{ width: `${(stat.value / stat.max) * 100}%`, backgroundColor: stat.color }}
+                                  style={{
+                                    width: `${(stat.value / stat.max) * 100}%`,
+                                    backgroundColor: stat.color,
+                                  }}
                                 />
-                                <button className="z-20">v</button>
+                                <button
+                                  type="button"
+                                  className="z-20 cursor-pointer"
+                                  onClick={() =>
+                                    handleCharacterDataChange(stat.value - 1, personagem.id, "statValue", stat.name)
+                                  }>
+                                  -
+                                </button>
                                 <div className="flex font-semibold z-20">
                                   <input
-                                    className="w-[3ch] text-center focus:outline-none"
-                                    type="number"
+                                    className="w-[3ch] text-center focus:outline-none bg-transparent"
+                                    type="text"
+                                    pattern="[0-9]*" // Aceita apenas dígitos
+                                    inputMode="numeric" // Mostra teclado numérico em dispositivos móveis
                                     value={stat.value}
                                     onChange={(e) =>
                                       handleCharacterDataChange(e, personagem.id, "statValue", stat.name)
@@ -313,45 +331,70 @@ export default function Dashboard() {
                                   />
                                   /
                                   <input
-                                    className="w-[3ch] text-center focus:outline-none"
-                                    type="number"
+                                    className="w-[3ch] text-center focus:outline-none bg-transparent"
+                                    type="text"
+                                    pattern="[0-9]*"
+                                    inputMode="numeric"
                                     value={stat.max}
                                     onChange={(e) => handleCharacterDataChange(e, personagem.id, "statMax", stat.name)}
                                   />
                                 </div>
-                                <button className="z-20">v</button>
+                                <button
+                                  type="button"
+                                  className="z-20 cursor-pointer"
+                                  onClick={() =>
+                                    handleCharacterDataChange(stat.value + 1, personagem.id, "statValue", stat.name)
+                                  }>
+                                  +
+                                </button>
                               </div>
                             </div>
                           );
                         }
+                        return null;
                       })}
                     </div>
                     <div className="flex gap-2">
                       {personagem.stats.map((stat) => {
-                        if (stat.max == undefined) {
+                        if (stat.max === undefined) {
                           return (
                             <div key={stat.name} className="flex gap-[0.5em] items-center">
                               <div className="w-fit font-bold">{stat.name}</div>
-                              <input
-                                className="w-[3ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
-                                type="number"
-                                value={stat.value}
-                                onChange={(e) => handleCharacterDataChange(e, personagem.id, "statValue", stat.name)}
-                              />
+                              {typeof stat.value === "number" && (
+                                <input
+                                  className="w-[3ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
+                                  type="text"
+                                  pattern="[0-9]*"
+                                  inputMode="numeric"
+                                  value={stat.value}
+                                  onChange={(e) => handleCharacterDataChange(e, personagem.id, "statValue", stat.name)}
+                                />
+                              )}
+                              {typeof stat.value === "string" && (
+                                <input
+                                  className="text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
+                                  type="text"
+                                  value={stat.value}
+                                  onChange={(e) => handleCharacterDataChange(e, personagem.id, "statValue", stat.name)}
+                                />
+                              )}
+                              {typeof stat.value === "boolean" && (
+                                <input
+                                  className="size-4 cursor-pointer"
+                                  type="checkbox"
+                                  checked={stat.value}
+                                  onChange={(e) => handleCharacterDataChange(e, personagem.id, "statValue", stat.name)}
+                                />
+                              )}
                             </div>
                           );
                         }
+                        return null;
                       })}
                     </div>
-                    <div>
-                      <button
-                        className="w-fit font-semibold bg-rose-700 px-[1em] text-[1em]  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
-                        type="submit">
-                        Salvar
-                      </button>
-                    </div>
+                    <div>{/* Botão de Salvar removido */}</div>
                   </div>
-                </form>
+                </div>
               ))}
             </div>
           </div>
@@ -359,12 +402,12 @@ export default function Dashboard() {
       ) : (
         <div className="flex flex-col flex-wrap gap-[1em]">
           <button
-            className="w-fit font-semibold bg-rose-700 px-[1em]  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+            className="w-fit font-semibold bg-rose-700 px-[1em]   pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
             onClick={() => setShowAddCampaignForm(true)}>
             + Nova Campanha
           </button>
           <div className="font-medium pb-[0.5em]">Escolha a campanha:</div>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             {campanhas.map((campanha) => (
               <div
                 key={campanha.id}

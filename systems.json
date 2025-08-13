@@ -1,10 +1,10 @@
 {
   "Mythic Bastionland": {
     "stats": [
-      { "name": "Clareza", "value": 0, "max": 0, "color": "#D58E2B" },
-      { "name": "Vigor", "value": 0, "max": 0, "color": "#4FAC38" },
-      { "name": "Espirito", "value": 0, "max": 0, "color": "#50C8B4" },
-      { "name": "Guarda", "value": 0, "max": 0, "color": "#666666" },
+      { "name": "Clareza", "value": 0, "max": 1, "color": "#D58E2B" },
+      { "name": "Vigor", "value": 0, "max": 1, "color": "#4FAC38" },
+      { "name": "Espirito", "value": 0, "max": 1, "color": "#50C8B4" },
+      { "name": "Guarda", "value": 0, "max": 1, "color": "#666666" },
       { "name": "Armadura", "value": 0 },
       { "name": "Gloria", "value": 0 },
       { "name": "Fatigado", "value": false }
@@ -12,17 +12,17 @@
   },
   "Ordem Paranormal": {
     "stats": [
-      { "name": "Vida", "value": 0, "max": 0 },
-      { "name": "Esforço", "value": 0, "max": 0 },
-      { "name": "Sanidade", "value": 0, "max": 0 },
+      { "name": "Vida", "value": 0, "max": 1, "color": "#B22222" },
+      { "name": "Sanidade", "value": 0, "max": 1, "color": "#8A2BE2" },
+      { "name": "Esforço", "value": 0, "max": 1, "color": "#FF8811" },
       { "name": "Nex", "value": 0 }
     ]
   },
   "Tormenta": {
     "stats": [
-      { "name": "Vida", "value": 0, "max": 0 },
-      { "name": "Mana", "value": 0, "max": 0 },
-      { "name": "Defesa", "value": 0, "max": 0 }
+      { "name": "Vida", "value": 0, "max": 1 },
+      { "name": "Mana", "value": 0, "max": 1 },
+      { "name": "Defesa", "value": 0, "max": 1 }
     ]
   }
 }

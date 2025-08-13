@@ -13,7 +13,7 @@
         "stats": [
           {
             "name": "Clareza",
-            "value": 11,
+            "value": 12,
             "max": 11,
             "color": "#D58E2B"
           },
@@ -25,7 +25,7 @@
           },
           {
             "name": "Espirito",
-            "value": 11,
+            "value": 12,
             "max": 11,
             "color": "#50C8B4"
           },
@@ -192,7 +192,37 @@
     "name": "teste",
     "system": "Ordem Paranormal",
     "date": "09/08/2025",
-    "characters": []
+    "characters": [
+      {
+        "id": 1,
+        "name": "Summer Amarok",
+        "icon": "2/sumer.png",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 22,
+            "max": 22,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 30,
+            "max": 30,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 21,
+            "max": 21,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Nex",
+            "value": 15
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 3,

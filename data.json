@@ -201,25 +201,25 @@
         "stats": [
           {
             "name": "Vida",
-            "value": 1,
-            "max": 1,
+            "value": 22,
+            "max": 22,
             "color": "#B22222"
           },
           {
             "name": "Sanidade",
-            "value": 1,
-            "max": 1,
+            "value": 30,
+            "max": 30,
             "color": "#8A2BE2"
           },
           {
             "name": "Esforço",
-            "value": 1,
-            "max": 1,
+            "value": 21,
+            "max": 21,
             "color": "#FF8811"
           },
           {
             "name": "Defesa",
-            "value": 0
+            "value": 10
           },
           {
             "name": "Bloqueio",
@@ -227,11 +227,179 @@
           },
           {
             "name": "Esquiva",
-            "value": 0
+            "value": 10
           },
           {
             "name": "Nível",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Eidaka",
+        "icon": "/uploads/2/2.png",
+        "color": "#b7b7b7",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 55,
+            "max": 55,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 21,
+            "max": 21,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 16,
+            "max": 16,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 11
+          },
+          {
+            "name": "Bloqueio",
+            "value": 10
+          },
+          {
+            "name": "Esquiva",
+            "value": 6
+          },
+          {
+            "name": "Nível",
+            "value": 4
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Alfred Edvard",
+        "icon": "/uploads/2/3.png",
+        "color": "#bababa",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 22,
+            "max": 22,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 30,
+            "max": 30,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 21,
+            "max": 21,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 12
+          },
+          {
+            "name": "Bloqueio",
             "value": 0
+          },
+          {
+            "name": "Esquiva",
+            "value": 17
+          },
+          {
+            "name": "Nível",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Jasper Fujiwara",
+        "icon": "/uploads/2/4.png",
+        "color": "#f4a343",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 28,
+            "max": 28,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 20,
+            "max": 20,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 15,
+            "max": 15,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 13
+          },
+          {
+            "name": "Bloqueio",
+            "value": 0
+          },
+          {
+            "name": "Esquiva",
+            "value": 18
+          },
+          {
+            "name": "Nível",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Hito Hidetaka",
+        "icon": "/uploads/2/5.png",
+        "color": "#4b9051",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 28,
+            "max": 28,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 24,
+            "max": 24,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 12,
+            "max": 12,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 14
+          },
+          {
+            "name": "Bloqueio",
+            "value": 0
+          },
+          {
+            "name": "Esquiva",
+            "value": 19
+          },
+          {
+            "name": "Nível",
+            "value": 3
           }
         ]
       }
@@ -381,7 +549,7 @@
           },
           {
             "name": "Texto",
-            "value": "Ta"
+            "value": ""
           },
           {
             "name": "Boolean",

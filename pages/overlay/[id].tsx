@@ -16,6 +16,7 @@ interface Stat {
   name: string;
   value: number;
   max?: number;
+  color?: string;
 }
 
 interface Character {
@@ -127,22 +128,63 @@ function Overlay() {
       );
     default:
       return (
-        <div className="flex flex-rol justify-between flex-wrap gap-4">
+        <div className="flex flex-row justify-between flex-wrap gap-4">
           {data.characters.map((character) => (
-            <div key={character.id} className="flex flex-row items-center gap-4 w-[22em]">
-              <img
-                src={character.icon}
-                alt={character.name}
-                className="size-32 aspect-square object-cover rounded-full"
-              />
-              <div className="flex flex-col w-full">
-                <div className="text-xl font-bold">{character.name}</div>
-                {character.stats.map((stat) => (
-                  <div key={stat.name}>
-                    <strong>{stat.name}:</strong> {stat.value}
-                    {stat.max ? ` / ${stat.max}` : ""}
+            <div key={character.id} className="flex gap-[0.2em] items-center">
+              <div className="flex flex-col items-center gap-[0.5em] w-[10.5em] px-[1em] py-[1em] relative rounded-[1.5em]">
+                <img
+                  src={character.icon}
+                  alt={character.name}
+                  className="size-[8.5em] aspect-square object-cover rounded-full"
+                />
+              </div>
+              <div className="flex flex-col gap-[0.5em]">
+                <div className="flex flex-col gap-[0.2em]">
+                  <div className="font-bold text-2xl w-full focus:outline-none" style={{ color: character.color }}>
+                    {character.name}
                   </div>
-                ))}
+                  {character.stats.map((stat) => {
+                    if (stat.max !== undefined) {
+                      return (
+                        <div key={stat.name} className="flex gap-[0.5em] items-center ">
+                          <div className="min-w-[5em] w-fit font-bold">{stat.name}</div>
+                          <div className="flex justify-center relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[18em] px-[1.2em] z-0">
+                            <div
+                              className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
+                              style={{
+                                width: `${(stat.value / stat.max) * 100}%`,
+                                backgroundColor: stat.color,
+                              }}
+                            />
+
+                            <div className="flex font-semibold z-20">
+                              {stat.value} / {stat.max}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+                <div className="flex gap-2">
+                  {character.stats.map((stat) => {
+                    if (stat.max === undefined) {
+                      return (
+                        <div key={stat.name} className="flex gap-[0.5em] items-center">
+                          <div className="w-fit font-bold">{stat.name}</div>
+                          <div
+                            className={`w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                            style={{ borderColor: character.color }}>
+                            {stat.value}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+                <div>{/* Botão de Salvar removido */}</div>
               </div>
             </div>
           ))}

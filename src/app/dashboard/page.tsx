@@ -28,12 +28,21 @@ interface Campanha {
   characters: Character[];
 }
 
+interface SystemData {
+  [key: string]: {
+    bg_from_color: string;
+    bg_to_color: string;
+    image_name: string;
+    stats: any[];
+  };
+}
+
 // Lista de sistemas fixos
 const FIXED_SYSTEMS = ["Mythic Bastionland", "Ordem Paranormal", "Tormenta", "Daggerheart"];
 
 export default function Dashboard() {
   const { data: campanhas, error, isLoading } = useSWR<Campanha[]>("/api/campanhas", fetcher);
-  const { data: systems, isLoading: systemsLoading } = useSWR<string[]>("/api/systems", fetcher);
+  const { data: systemsData, isLoading: systemsLoading } = useSWR<SystemData>("/api/systems", fetcher);
 
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
   // Dentro do seu componente Dashboard
@@ -43,7 +52,7 @@ export default function Dashboard() {
 
   const [showAddCampaignForm, setShowAddCampaignForm] = useState(false);
   const [showAddCharacterForm, setShowAddCharacterForm] = useState(false);
-  const [newCampaignData, setNewCampaignData] = useState({ name: "", system: systems ? systems[0] : "" });
+  const [newCampaignData, setNewCampaignData] = useState({ name: "", system: systemsData ? systemsData[0] : "" });
   const [newCharacterFile, setNewCharacterFile] = useState<File | null>(null);
   const [newCharacterData, setNewCharacterData] = useState({ name: "", color: "#ff0000" });
   const selectedCampaign = campanhas?.find((c) => c.id === selectedCampaignId) || null;
@@ -61,7 +70,7 @@ export default function Dashboard() {
   }, [visibleColorPickerId, selectedCampaign]);
 
   if (error || systemsLoading) return <div>Falha ao carregar as campanhas ou sistemas.</div>;
-  if (isLoading || !systems) return <div>Carregando...</div>;
+  if (isLoading || !systemsData) return <div>Carregando...</div>;
   if (!campanhas) return <div>Nenhuma campanha encontrada.</div>;
 
   const handleUpdateCharacter = async (updatedChar: Character) => {
@@ -76,6 +85,19 @@ export default function Dashboard() {
     if (!res.ok) {
       console.error("Erro ao atualizar o personagem.");
       mutate("/api/campanhas");
+    }
+  };
+
+  // Dentro do seu componente Dashboard
+  const handleCopyUrl = async (campaignId: string) => {
+    const overlayUrl = `${window.location.origin}/overlay/${campaignId}`;
+
+    try {
+      await navigator.clipboard.writeText(overlayUrl);
+      alert("URL copiada para a área de transferência!");
+    } catch (err) {
+      console.error("Falha ao copiar a URL: ", err);
+      alert("Erro ao copiar a URL. Por favor, tente novamente.");
     }
   };
 
@@ -200,10 +222,10 @@ export default function Dashboard() {
               Sistema
               <select
                 className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
-                value={newCampaignData.system}
+                value={newCampaignData.name}
                 onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}
                 required>
-                {systems?.map((s) => (
+                {Object.keys(systemsData).map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>
@@ -312,6 +334,13 @@ export default function Dashboard() {
                       onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "name")}
                     />
 
+                    <button
+                      className="w-fit font-bold  p-[0.5em] rounded-full size-[2.5em] absolute cursor-pointer bottom-[2.5em] left-[1em] bg-gray-800"
+                      onClick={() => handleCopyUrl(`${selectedCampaign.id}/${personagem.id}`)} // Chama a função com o ID da campanha
+                    >
+                      <img src="copy.png" alt="Copiar URL" className="w-full h-full object-cover" />
+                    </button>
+
                     <div
                       className="rounded-full size-[2em] absolute bottom-[2.5em] right-[1em] cursor-pointer z-0 outline-2"
                       style={{ backgroundColor: personagem.color }}
@@ -347,7 +376,7 @@ export default function Dashboard() {
                         if (stat.max !== undefined) {
                           return (
                             <div key={stat.name} className="flex gap-[0.5em] items-center ">
-                              <div className="min-w-[4em] w-fit font-bold">{stat.name}</div>
+                              <div className="min-w-[4.75em] w-fit font-bold">{stat.name}</div>
                               <div className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
                                 <div
                                   className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
@@ -420,7 +449,7 @@ export default function Dashboard() {
                               )}
                               {typeof stat.value === "string" && (
                                 <input
-                                  className="text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
+                                  className="w-[10ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
                                   type="text"
                                   value={stat.value}
                                   onChange={(e) =>
@@ -460,62 +489,54 @@ export default function Dashboard() {
           </button>
           <div className="font-medium pb-[0.5em]">Escolha a campanha:</div>
           <div className="flex flex-wrap gap-4">
-            {campanhas.map((campanha) => (
-              <div
-                key={campanha.id}
-                className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em] ${
-                  campanha.system == "Ordem Paranormal"
-                    ? "bg-linear-to-t from-[#2C2D88] to-[#431A4B]"
-                    : campanha.system == "Mythic Bastionland"
-                    ? "bg-linear-to-t from-[#246569] to-[#1E212F]"
-                    : campanha.system == "Tormenta"
-                    ? "bg-linear-to-t from-[#A62124] to-[#460809]"
-                    : campanha.system == "Daggerheart"
-                    ? "bg-linear-to-t from-[#64A398] to-[#33408A]"
-                    : "bg-linear-to-t from-[#621333] to-[#CF5353]"
-                }`}>
-                <img
-                  src={
-                    campanha.system == "Ordem Paranormal"
-                      ? "ordem.png"
-                      : campanha.system == "Mythic Bastionland"
-                      ? "mythic.png"
-                      : campanha.system == "Tormenta"
-                      ? "tormenta.webp"
-                      : campanha.system == "Daggerheart"
-                      ? "dagger.webp"
-                      : "generico.webp"
-                  }
-                  className="w-[15em] h-[8em] object-contain"
-                />
-                <div className="text-2xl font-bold py-[0.5em]">{campanha.name}</div>
-                <div className="flex flex-col gap-[0.2em] w-full">
-                  <div className="flex justify-between w-full">
-                    <div className="font-bold">ID:</div>
-                    {campanha.id}
-                  </div>
-                  <div className="flex justify-between w-full">
-                    <div className="font-bold">Jogadores:</div>
-                    {campanha.characters.length}
-                  </div>
+            {campanhas.map((campanha) => {
+              const systemDetails = systemsData?.[campanha.system];
+              return (
+                <div
+                  key={campanha.id}
+                  className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em] ${
+                    // Se não houver dados, use um gradiente padrão
+                    systemDetails
+                      ? `bg-linear-to-t from-[${systemDetails.bg_from_color}] to-[${systemDetails.bg_to_color}]`
+                      : "bg-linear-to-t from-[#621333] to-[#CF5353]"
+                  }`}>
+                  <img
+                    src={systemDetails ? systemDetails.image_name : "generico.webp"}
+                    className="w-[15em] h-[8em] object-contain"
+                    alt={campanha.system}
+                  />
+                  <div className="text-2xl font-bold py-[0.5em]">{campanha.name}</div>
+                  <div className="flex flex-col gap-[0.2em] w-full">
+                    <div className="flex justify-between w-full">
+                      <div className="font-bold">ID:</div>
+                      {campanha.id}
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="font-bold">Jogadores:</div>
+                      {campanha.characters.length}
+                    </div>
 
-                  <div className="flex justify-between w-full">
-                    <div className="font-bold">Criação:</div>
-                    {campanha.date}
+                    <div className="flex justify-between w-full">
+                      <div className="font-bold">Criação:</div>
+                      {campanha.date}
+                    </div>
+                  </div>
+                  <div className="flex gap-[0.5em]">
+                    <button
+                      className="w-fit font-bold bg-white px-[1.2em] pt-[0.15em] pb-[0.25em] rounded-[1em] text-[#1E212F] cursor-pointer mt-4"
+                      onClick={() => handleSelectCampaign(campanha)}>
+                      Selecionar
+                    </button>
+                    <button
+                      className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4"
+                      onClick={() => handleCopyUrl(campanha.id.toString())} // Chama a função com o ID da campanha
+                    >
+                      <img src="copy.png" alt="Copiar URL" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex gap-[0.5em]">
-                  <button
-                    className="w-fit font-bold bg-white px-[1.2em] pt-[0.15em] pb-[0.25em] rounded-[1em] text-[#1E212F] cursor-pointer mt-4"
-                    onClick={() => handleSelectCampaign(campanha)}>
-                    Selecionar
-                  </button>
-                  <button className="w-fit font-bold border-2 border-white  p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4">
-                    <img src="copy.png" alt="" />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

@@ -1,5 +1,8 @@
 {
   "Mythic Bastionland": {
+    "bg_from_color": "#246569",
+    "bg_to_color": "#1E212F",
+    "image_name": "mythic.png",
     "stats": [
       { "name": "Clareza", "value": 1, "max": 1, "color": "#D58E2B" },
       { "name": "Vigor", "value": 1, "max": 1, "color": "#4FAC38" },
@@ -11,6 +14,9 @@
     ]
   },
   "Ordem Paranormal": {
+    "bg_from_color": "#2C2D88",
+    "bg_to_color": "#431A4B",
+    "image_name": "ordem.png",
     "stats": [
       { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
       { "name": "Sanidade", "value": 1, "max": 1, "color": "#8A2BE2" },
@@ -22,6 +28,9 @@
     ]
   },
   "Tormenta": {
+    "bg_from_color": "#A62124",
+    "bg_to_color": "#460809",
+    "image_name": "tormenta.webp",
     "stats": [
       { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
       { "name": "Mana", "value": 1, "max": 1, "color": "#1D62E4" },
@@ -31,6 +40,9 @@
     ]
   },
   "Daggerheart": {
+    "bg_from_color": "#64A398",
+    "bg_to_color": "#33408A",
+    "image_name": "dagger.webp",
     "stats": [
       { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
       { "name": "Estresse", "value": 1, "max": 1, "color": "#25576E" },
@@ -40,6 +52,9 @@
     ]
   },
   "Customizado": {
+    "bg_from_color": "#621333",
+    "bg_to_color": "#CF5353",
+    "image_name": "generico.webp",
     "stats": [
       { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
       { "name": "Mana", "value": 1, "max": 1, "color": "#1D62E4" },

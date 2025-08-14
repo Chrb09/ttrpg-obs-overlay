@@ -494,12 +494,16 @@ export default function Dashboard() {
               return (
                 <div
                   key={campanha.id}
-                  className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em] ${
-                    // Se não houver dados, use um gradiente padrão
+                  className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em]`}
+                  style={
                     systemDetails
-                      ? `bg-linear-to-t from-[${systemDetails.bg_from_color}] to-[${systemDetails.bg_to_color}]`
-                      : "bg-linear-to-t from-[#621333] to-[#CF5353]"
-                  }`}>
+                      ? {
+                          background: `linear-gradient(0deg, ${systemDetails.bg_from_color} 0%, ${systemDetails.bg_to_color} 100%)`,
+                        }
+                      : {
+                          background: `linear-gradient(0deg, #621333) 0%,  #CF5353 100%)`,
+                        }
+                  }>
                   <img
                     src={systemDetails ? systemDetails.image_name : "generico.webp"}
                     className="w-[15em] h-[8em] object-contain"

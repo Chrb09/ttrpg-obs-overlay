@@ -30,6 +30,7 @@ interface Campanha {
   id: number;
   name: string;
   system: string;
+  date: string;
   characters: Character[];
 }
 
@@ -41,33 +42,9 @@ function Overlay() {
 
   if (error) return <div>Falha ao carregar a campanha.</div>;
   if (!data) return <div>Campanha não encontrada.</div>;
-
+  console.log("Sistema da campanha:", data.system);
   // Lógica principal: decide qual layout renderizar com base no sistema da campanha
   switch (data.system) {
-    case "Ordem Paranormal":
-      return (
-        <div className="flex flex-rol justify-between flex-wrap gap-4">
-          {data.characters.map((character) => (
-            <div key={character.id} className="flex flex-row items-center gap-4 w-[22em]">
-              <img
-                src={character.icon}
-                alt={character.name}
-                className="size-32 aspect-square object-cover rounded-full"
-              />
-              <div className="flex flex-col w-full">
-                <div className="text-xl font-bold">{character.name}</div>
-                {character.stats.map((stat) => (
-                  <div key={stat.name}>
-                    <strong>{stat.name}:</strong>
-                    {stat.name === "Nex" ? ` ${stat.value}%` : ` ${stat.value} / ${stat.max}`}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      );
-
     case "Mythic Bastionland":
       return (
         <div className="flex flex-rol justify-between flex-wrap gap-8 p-4">
@@ -148,34 +125,7 @@ function Overlay() {
           })}
         </div>
       );
-
-    case "Tormenta":
-      return (
-        <div className="flex flex-rol justify-between flex-wrap gap-4 bg-yellow-100 p-4">
-          {data.characters.map((character) => (
-            <div
-              key={character.id}
-              className="flex flex-row items-center gap-4 w-[22em] bg-white p-4 rounded-xl shadow">
-              <img
-                src={character.icon}
-                alt={character.name}
-                className="size-32 aspect-square object-cover rounded-full border-4 border-yellow-500"
-              />
-              <div className="flex flex-col w-full">
-                <div className="text-xl font-bold text-yellow-800">{character.name}</div>
-                {character.stats.map((stat) => (
-                  <div key={stat.name}>
-                    <strong className="text-yellow-600">{stat.name}:</strong> {stat.value} / {stat.max}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      );
-
     default:
-      // Layout padrão para sistemas não especificados
       return (
         <div className="flex flex-rol justify-between flex-wrap gap-4">
           {data.characters.map((character) => (

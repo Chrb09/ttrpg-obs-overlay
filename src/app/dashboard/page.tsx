@@ -29,21 +29,23 @@ interface Campanha {
 }
 
 // Lista de sistemas fixos
-const FIXED_SYSTEMS = ["Mythic Bastionland", "Ordem Paranormal", "Tormenta"];
+const FIXED_SYSTEMS = ["Mythic Bastionland", "Ordem Paranormal", "Tormenta", "Daggerheart"];
 
 export default function Dashboard() {
   const { data: campanhas, error, isLoading } = useSWR<Campanha[]>("/api/campanhas", fetcher);
+  const { data: systems, isLoading: systemsLoading } = useSWR<string[]>("/api/systems", fetcher);
 
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
   // Dentro do seu componente Dashboard
   const [visibleColorPickerId, setVisibleColorPickerId] = useState<number | null>(null);
-  const [tempColor, setTempColor] = useState<string>("#ffffff"); // Estado para a cor temporária
+  const [tempColor, setTempColor] = useState<string>("#ff0000"); // Estado para a cor temporária
   // ...
 
   const [showAddCampaignForm, setShowAddCampaignForm] = useState(false);
   const [showAddCharacterForm, setShowAddCharacterForm] = useState(false);
-  const [newCampaignData, setNewCampaignData] = useState({ name: "", system: FIXED_SYSTEMS[0] });
-  const [newCharacterData, setNewCharacterData] = useState({ name: "", icon: "", color: "#ffffff" });
+  const [newCampaignData, setNewCampaignData] = useState({ name: "", system: systems ? systems[0] : "" });
+  const [newCharacterFile, setNewCharacterFile] = useState<File | null>(null);
+  const [newCharacterData, setNewCharacterData] = useState({ name: "", color: "#ff0000" });
   const selectedCampaign = campanhas?.find((c) => c.id === selectedCampaignId) || null;
 
   // Dentro do seu componente Dashboard, logo abaixo dos `useState`
@@ -58,8 +60,8 @@ export default function Dashboard() {
     }
   }, [visibleColorPickerId, selectedCampaign]);
 
-  if (error) return <div>Falha ao carregar as campanhas.</div>;
-  if (isLoading) return <div>Carregando campanhas...</div>;
+  if (error || systemsLoading) return <div>Falha ao carregar as campanhas ou sistemas.</div>;
+  if (isLoading || !systems) return <div>Carregando...</div>;
   if (!campanhas) return <div>Nenhuma campanha encontrada.</div>;
 
   const handleUpdateCharacter = async (updatedChar: Character) => {
@@ -80,7 +82,7 @@ export default function Dashboard() {
   const handleCharacterDataChange = async (
     newValue: any, // O novo valor (string ou número)
     charId: number,
-    field: "name" | "icon" | "color" | "statValue" | "statMax",
+    field: "name" | "color" | "statValue" | "statMax",
     statName?: string
   ) => {
     const campanhaKey = "/api/campanhas";
@@ -103,7 +105,7 @@ export default function Dashboard() {
               });
               updatedChar = { ...char, stats: updatedStats };
             } else {
-              // Lógica para nome, ícone e cor
+              // Lógica para nome e cor
               updatedChar = { ...char, [field]: newValue };
             }
             return updatedChar;
@@ -147,17 +149,27 @@ export default function Dashboard() {
     e.preventDefault();
     if (!selectedCampaignId) return;
 
-    console.log("Adicionando personagem:", newCharacterData);
+    const formData = new FormData();
+    formData.append("name", newCharacterData.name);
+    formData.append("color", newCharacterData.color);
+
+    // Anexa o arquivo APENAS se o usuário tiver selecionado um
+    if (newCharacterFile) {
+      formData.append("iconFile", newCharacterFile);
+    }
+
     const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/add`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newCharacterData),
+      body: formData, // Envia o FormData em vez de JSON.stringify
     });
 
     if (res.ok) {
       setShowAddCharacterForm(false);
-      setNewCharacterData({ name: "", icon: "", color: "#ffffff" });
+      setNewCharacterData({ name: "", color: "#ff0000" });
+      setNewCharacterFile(null); // Limpa o estado do arquivo
       mutate("/api/campanhas");
+    } else {
+      console.error("Erro ao adicionar personagem.");
     }
   };
 
@@ -187,12 +199,13 @@ export default function Dashboard() {
             <div className="flex flex-col gap-[0.2em]">
               Sistema
               <select
-                className="w-full border-rose-700 border-[0.15em] py-[0.45em] px-[0.5em] rounded-[0.85em]"
+                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
                 value={newCampaignData.system}
-                onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}>
-                {FIXED_SYSTEMS.map((system) => (
-                  <option key={system} value={system}>
-                    {system}
+                onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}
+                required>
+                {systems?.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
                   </option>
                 ))}
               </select>
@@ -235,11 +248,12 @@ export default function Dashboard() {
               Foto do personagem
               <input
                 className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
-                type="text"
-                placeholder="Caminho do Ícone"
-                value={newCharacterData.icon}
-                onChange={(e) => setNewCharacterData({ ...newCharacterData, icon: e.target.value })}
-                required
+                type="file"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    setNewCharacterFile(e.target.files[0]);
+                  }
+                }}
               />
             </div>
             <div className="flex flex-col gap-[0.2em]">
@@ -299,7 +313,7 @@ export default function Dashboard() {
                     />
 
                     <div
-                      className="rounded-full size-[2em] absolute bottom-[2.5em] right-[1em] cursor-pointer z-20"
+                      className="rounded-full size-[2em] absolute bottom-[2.5em] right-[1em] cursor-pointer z-0 outline-2"
                       style={{ backgroundColor: personagem.color }}
                       onClick={() => {
                         setVisibleColorPickerId(personagem.id);
@@ -326,13 +340,6 @@ export default function Dashboard() {
                         </div>
                       </div>
                     )}
-
-                    <input
-                      type="text"
-                      value={personagem.icon}
-                      onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "icon")}
-                      hidden
-                    />
                   </div>
                   <div className="flex flex-col gap-[0.5em]">
                     <div className="flex flex-col gap-2">
@@ -355,7 +362,7 @@ export default function Dashboard() {
                                   onClick={() =>
                                     handleCharacterDataChange(stat.value - 1, personagem.id, "statValue", stat.name)
                                   }>
-                                  -
+                                  <img src="arrow.png" className="size-[0.75em] object-contain" alt="Aumentar" />
                                 </button>
                                 <div className="flex font-semibold z-20">
                                   <input
@@ -382,7 +389,11 @@ export default function Dashboard() {
                                   onClick={() =>
                                     handleCharacterDataChange(stat.value + 1, personagem.id, "statValue", stat.name)
                                   }>
-                                  +
+                                  <img
+                                    src="arrow.png"
+                                    className="size-[0.75em] object-contain rotate-180"
+                                    alt="Aumentar"
+                                  />
                                 </button>
                               </div>
                             </div>
@@ -459,7 +470,9 @@ export default function Dashboard() {
                     ? "bg-linear-to-t from-[#246569] to-[#1E212F]"
                     : campanha.system == "Tormenta"
                     ? "bg-linear-to-t from-[#A62124] to-[#460809]"
-                    : "bg-[#000000]"
+                    : campanha.system == "Daggerheart"
+                    ? "bg-linear-to-t from-[#64A398] to-[#33408A]"
+                    : "bg-linear-to-t from-[#621333] to-[#CF5353]"
                 }`}>
                 <img
                   src={
@@ -469,7 +482,9 @@ export default function Dashboard() {
                       ? "mythic.png"
                       : campanha.system == "Tormenta"
                       ? "tormenta.webp"
-                      : "generico.png"
+                      : campanha.system == "Daggerheart"
+                      ? "dagger.webp"
+                      : "generico.webp"
                   }
                   className="w-[15em] h-[8em] object-contain"
                 />

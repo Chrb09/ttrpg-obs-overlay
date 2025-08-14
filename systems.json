@@ -1,35 +1,51 @@
 {
   "Mythic Bastionland": {
     "stats": [
-      { "name": "Clareza", "value": 0, "max": 1, "color": "#D58E2B" },
-      { "name": "Vigor", "value": 0, "max": 1, "color": "#4FAC38" },
-      { "name": "Espirito", "value": 0, "max": 1, "color": "#50C8B4" },
-      { "name": "Guarda", "value": 0, "max": 1, "color": "#666666" },
-      { "name": "Armadura", "value": 0 },
-      { "name": "Gloria", "value": 0 },
+      { "name": "Clareza", "value": 1, "max": 1, "color": "#D58E2B" },
+      { "name": "Vigor", "value": 1, "max": 1, "color": "#4FAC38" },
+      { "name": "Espirito", "value": 1, "max": 1, "color": "#50C8B4" },
+      { "name": "Guarda", "value": 1, "max": 1, "color": "#666666" },
+      { "name": "Armadura", "value": 1 },
+      { "name": "Gloria", "value": 1 },
       { "name": "Fatigado", "value": false }
     ]
   },
   "Ordem Paranormal": {
     "stats": [
-      { "name": "Vida", "value": 0, "max": 1, "color": "#B22222" },
-      { "name": "Sanidade", "value": 0, "max": 1, "color": "#8A2BE2" },
-      { "name": "Esforço", "value": 0, "max": 1, "color": "#FF8811" },
-      { "name": "Nex", "value": 0 }
+      { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
+      { "name": "Sanidade", "value": 1, "max": 1, "color": "#8A2BE2" },
+      { "name": "Esforço", "value": 1, "max": 1, "color": "#FF8811" },
+      { "name": "Defesa", "value": 1 },
+      { "name": "Bloqueio", "value": 1 },
+      { "name": "Esquiva", "value": 1 },
+      { "name": "Nível", "value": 1 }
     ]
   },
   "Tormenta": {
     "stats": [
-      { "name": "Vida", "value": 0, "max": 1 },
-      { "name": "Mana", "value": 0, "max": 1 },
-      { "name": "Defesa", "value": 0, "max": 1 }
+      { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
+      { "name": "Mana", "value": 1, "max": 1, "color": "#1D62E4" },
+      { "name": "Defesa", "value": 1 },
+      { "name": "CD", "value": 1 },
+      { "name": "Nível", "value": 1 }
     ]
   },
-  "Outro": {
+  "Daggerheart": {
     "stats": [
-      { "name": "Vida", "value": 0, "max": 1, "color": "#B22222" },
-      { "name": "Mana", "value": 0, "max": 1, "color": "#8A2BE2" },
-      { "name": "Defesa", "value": 0, "max": 1, "color": "#666666" }
+      { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
+      { "name": "Estresse", "value": 1, "max": 1, "color": "#25576E" },
+      { "name": "Esperança", "value": 1, "max": 1, "color": "#D08F16" },
+      { "name": "Armadura", "value": 1 },
+      { "name": "Evasão", "value": 1 }
+    ]
+  },
+  "Customizado": {
+    "stats": [
+      { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
+      { "name": "Mana", "value": 1, "max": 1, "color": "#1D62E4" },
+      { "name": "Defesa", "value": 1 },
+      { "name": "Texto", "value": "Texto" },
+      { "name": "Boolean", "value": false }
     ]
   }
 }

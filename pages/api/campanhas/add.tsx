@@ -17,10 +17,19 @@ export default async function handler(req: any, res: any) {
     // Gerar um novo ID (simplesmente o próximo número)
     const newId = campanhas.length > 0 ? Math.max(...campanhas.map((c: any) => c.id)) + 1 : 1;
 
+    // --- Lógica para gerar a data atual ---
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Mês é de 0 a 11
+    const year = now.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+    // ------------------------------------
+
     const newCampanha = {
       id: newId,
       name,
       system,
+      date: formattedDate, // Adiciona a data no formato desejado
       characters: [],
     };
 

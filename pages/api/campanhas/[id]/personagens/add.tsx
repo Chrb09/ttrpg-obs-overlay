@@ -8,7 +8,7 @@ export default async function handler(req: any, res: any) {
   }
 
   const { id: campaignId } = req.query;
-  const { name, icon } = req.body;
+  const { name, icon, color } = req.body;
   const filePath = path.join(process.cwd(), "data.json");
   const systemsPath = path.join(process.cwd(), "systems.json");
 
@@ -36,6 +36,7 @@ export default async function handler(req: any, res: any) {
       id: newCharId,
       name,
       icon,
+      color,
       stats: baseStats,
     };
 

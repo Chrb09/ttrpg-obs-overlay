@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "Mythic Amanda",
+    "name": "Angelical",
     "system": "Mythic Bastionland",
     "date": "09/08/2025",
     "characters": [
@@ -46,7 +46,7 @@
           },
           {
             "name": "Fatigado",
-            "value": true
+            "value": false
           }
         ]
       },
@@ -189,7 +189,7 @@
   },
   {
     "id": 2,
-    "name": "teste",
+    "name": "SuperImposed",
     "system": "Ordem Paranormal",
     "date": "09/08/2025",
     "characters": [
@@ -220,13 +220,44 @@
             "name": "Nex",
             "value": 15
           }
-        ]
+        ],
+        "color": "#e02c2c"
+      },
+      {
+        "id": 2,
+        "name": "Jasper Fujiwara",
+        "icon": "2/jasper.png",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 0,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 0,
+            "max": 1,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 0,
+            "max": 1,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Nex",
+            "value": 0
+          }
+        ],
+        "color": "#e48017"
       }
     ]
   },
   {
     "id": 3,
-    "name": "teste2",
+    "name": "20 Furries e 1 esqueleto",
     "system": "Tormenta",
     "date": "09/08/2025",
     "characters": []

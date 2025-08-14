@@ -1,4 +1,5 @@
 "use client";
+import { Colorful } from "@uiw/react-color";
 import React, { useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
 
@@ -34,13 +35,28 @@ export default function Dashboard() {
   const { data: campanhas, error, isLoading } = useSWR<Campanha[]>("/api/campanhas", fetcher);
 
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
+  // Dentro do seu componente Dashboard
+  const [visibleColorPickerId, setVisibleColorPickerId] = useState<number | null>(null);
+  const [tempColor, setTempColor] = useState<string>("#ffffff"); // Estado para a cor temporária
+  // ...
 
   const [showAddCampaignForm, setShowAddCampaignForm] = useState(false);
   const [showAddCharacterForm, setShowAddCharacterForm] = useState(false);
   const [newCampaignData, setNewCampaignData] = useState({ name: "", system: FIXED_SYSTEMS[0] });
   const [newCharacterData, setNewCharacterData] = useState({ name: "", icon: "", color: "#ffffff" });
-
   const selectedCampaign = campanhas?.find((c) => c.id === selectedCampaignId) || null;
+
+  // Dentro do seu componente Dashboard, logo abaixo dos `useState`
+  useEffect(() => {
+    if (visibleColorPickerId !== null) {
+      // Encontre o personagem cujo color picker foi aberto
+      const character = selectedCampaign?.characters.find((c) => c.id === visibleColorPickerId);
+      if (character) {
+        // Sincroniza a cor temporária com a cor original do personagem
+        setTempColor(character.color);
+      }
+    }
+  }, [visibleColorPickerId, selectedCampaign]);
 
   if (error) return <div>Falha ao carregar as campanhas.</div>;
   if (isLoading) return <div>Carregando campanhas...</div>;
@@ -69,7 +85,6 @@ export default function Dashboard() {
   ) => {
     const campanhaKey = "/api/campanhas";
     let updatedChar: Character | null = null; // Crie uma variável para o personagem atualizado
-
     const updatedCampanhas = campanhas.map((campanha) => {
       if (campanha.id === selectedCampaignId) {
         const updatedCharacters = campanha.characters.map((char) => {
@@ -132,6 +147,7 @@ export default function Dashboard() {
     e.preventDefault();
     if (!selectedCampaignId) return;
 
+    console.log("Adicionando personagem:", newCharacterData);
     const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -228,13 +244,10 @@ export default function Dashboard() {
             </div>
             <div className="flex flex-col gap-[0.2em]">
               Cor do personagem
-              <input
-                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
-                type="color"
-                placeholder="Cor do Personagem"
-                value={newCharacterData.color}
-                onChange={(e) => setNewCharacterData({ ...newCharacterData, color: e.target.value })}
-                required
+              <Colorful
+                color={newCharacterData.color}
+                onChange={(color) => setNewCharacterData({ ...newCharacterData, color: color.hex })}
+                disableAlpha={true}
               />
             </div>
             <div className="flex justify-between gap-[0.75em]">
@@ -279,20 +292,40 @@ export default function Dashboard() {
                       className="size-[7.5em] aspect-square object-cover rounded-full"
                     />
                     <input
-                      className="text-center font-bold text-2xl w-full focus:outline-none"
+                      className="text-center font-bold text-2xl w-full focus:outline-none border-b-2 border-rose-700"
                       type="text"
                       value={personagem.name}
                       onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "name")}
-                      disabled
                     />
 
-                    <input
-                      className="text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
-                      type="text"
-                      value={personagem.color}
-                      onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "color")}
-                      hidden
+                    <div
+                      className="rounded-full size-[2em] absolute bottom-[2.5em] right-[1em] cursor-pointer z-20"
+                      style={{ backgroundColor: personagem.color }}
+                      onClick={() => {
+                        setVisibleColorPickerId(personagem.id);
+                      }}
                     />
+
+                    {visibleColorPickerId === personagem.id && (
+                      <div className="absolute z-50 right-[1em] bottom-[-1em]" onClick={(e) => e.stopPropagation()}>
+                        <Colorful color={tempColor} onChange={(color) => setTempColor(color.hex)} disableAlpha={true} />
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            onClick={() => {
+                              handleCharacterDataChange(tempColor, personagem.id, "color");
+                              setVisibleColorPickerId(null);
+                            }}
+                            className="flex-1 bg-rose-700 text-white rounded-md px-4 py-2 cursor-pointer">
+                            Salvar
+                          </button>
+                          <button
+                            onClick={() => setVisibleColorPickerId(null)}
+                            className="flex-1 bg-gray-500 text-white rounded-md px-4 py-2 cursor-pointer">
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     <input
                       type="text"

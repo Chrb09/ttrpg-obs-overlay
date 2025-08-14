@@ -7,8 +7,8 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ message: "Método não permitido" });
   }
 
-  const { id: campaignId, charId } = req.query; // Pega o ID da campanha e do personagem
-  const { stats } = req.body; // Pega o array de stats atualizado do corpo da requisição
+  const { id: campaignId, charId } = req.query;
+  const updatedData = req.body; // Pega o objeto completo com todos os dados atualizados
 
   const filePath = path.join(process.cwd(), "data.json");
 
@@ -28,10 +28,14 @@ export default async function handler(req: any, res: any) {
       return res.status(404).json({ message: "Personagem não encontrado" });
     }
 
-    // Atualiza os stats do personagem
+    // Pega o personagem atual
+    const personagemExistente = campanhas[campanhaIndex].characters[personagemIndex];
+
+    // Atualiza o personagem combinando os dados existentes com os novos dados
     const personagemAtualizado = {
-      ...campanhas[campanhaIndex].characters[personagemIndex],
-      stats: stats, // Substitui o array de stats pelo novo
+      ...personagemExistente,
+      ...updatedData, // Sobrescreve as propriedades com os dados da requisição
+      id: personagemExistente.id, // Garante que o ID não seja alterado
     };
 
     campanhas[campanhaIndex].characters[personagemIndex] = personagemAtualizado;
@@ -39,8 +43,8 @@ export default async function handler(req: any, res: any) {
     // Salva as mudanças no arquivo JSON
     await fs.writeFile(filePath, JSON.stringify(campanhas, null, 2));
 
-    return res.status(200).json({ message: "Stats do personagem atualizados com sucesso" });
+    return res.status(200).json({ message: "Personagem atualizado com sucesso" });
   } catch (error) {
-    return res.status(500).json({ message: "Erro ao atualizar stats do personagem", error });
+    return res.status(500).json({ message: "Erro ao atualizar o personagem", error });
   }
 }

@@ -4,6 +4,7 @@ import useSWR from "swr";
 import MythicColor from "../mythic";
 import "../../../src/app/globals.css";
 import { Manufacturing_Consent } from "next/font/google";
+import { motion } from "motion/react";
 
 const manufacturingConsent = Manufacturing_Consent({
   subsets: ["latin"],
@@ -164,7 +165,7 @@ function OverlayCharacter() {
                         <div key={stat.name} className="flex gap-[0.5em] items-center ">
                           <div className="min-w-[5em] w-fit font-bold">{stat.name}</div>
                           <div className="flex justify-center relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[18em] px-[1.2em] z-0">
-                            <div
+                            <motion.div
                               className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
                               style={{
                                 width: `${
@@ -173,6 +174,14 @@ function OverlayCharacter() {
                                     : 0
                                 }%`,
                                 backgroundColor: stat.color,
+                              }}
+                              initial={false}
+                              animate={{
+                                width: `${
+                                  typeof stat.value === "number" && typeof stat.max === "number"
+                                    ? (stat.value / stat.max) * 100
+                                    : 0
+                                }%`,
                               }}
                             />
 

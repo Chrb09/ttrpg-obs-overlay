@@ -200,9 +200,21 @@ export default function Dashboard() {
     <div className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[5em]">
       <div className="flex justify-between">
         <div
-          className="text-2xl font-bold text-rose-700 pb-[0.5em] cursor-pointer"
+          className="text-2xl font-bold text-rose-700 pb-[0.5em] cursor-pointer flex gap-[0.35em]"
           onClick={() => setSelectedCampaignId(null)}>
-          Home {selectedCampaignId && <span> {`> ${selectedCampaign?.name}`}</span>}
+          Home
+          <AnimatePresence>
+            {selectedCampaignId && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}>
+                {" "}
+                {`> ${selectedCampaign?.name}`}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <div className="text-3xl font-bold text-gray-900 flex items-center gap-[0.5em]">
           <img src="logo.png" className="size-[2.5em]" alt="" />
@@ -251,14 +263,14 @@ export default function Dashboard() {
                       />
 
                       <button
-                        className="w-fit font-bold  p-[0.5em] rounded-full size-[2.5em] absolute cursor-pointer bottom-[2.5em] left-[1em] transition-all duration-200 bg-gray-700 hover:bg-gray-800"
+                        className=" font-bold  flex items-center justify-center rounded-full size-[1.80em] absolute cursor-pointer bottom-[2.5em] left-[1em] transition-all duration-200 bg-gray-700 hover:bg-gray-800 hover:size-[2.10em]"
                         onClick={() => handleCopyUrl(`${selectedCampaign.id}/${personagem.id}`)} // Chama a função com o ID da campanha
                       >
-                        <img src="copy.png" alt="Copiar URL" className="w-full h-full object-cover" draggable={false} />
+                        <img src="copy.png" alt="Copiar URL" className="size-[1em] object-cover" draggable={false} />
                       </button>
 
                       <div
-                        className="rounded-full size-[2em] absolute bottom-[2.5em] right-[1em] cursor-pointer z-0 outline-2"
+                        className="rounded-full size-[1.80em] absolute bottom-[2.5em] right-[1em] transition-all duration-200 cursor-pointer z-0 border-[0.15em] hover:size-[2.10em]"
                         style={{ backgroundColor: personagem.color }}
                         onClick={() => {
                           setVisibleColorPickerId(personagem.id);

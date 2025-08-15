@@ -786,6 +786,38 @@
             "value": false
           }
         ]
+      },
+      {
+        "id": 3,
+        "name": "teste",
+        "icon": "/uploads/5/3.png",
+        "color": "#00ff98",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "Texto",
+            "value": "Texto"
+          },
+          {
+            "name": "Boolean",
+            "value": false
+          }
+        ]
       }
     ]
   }

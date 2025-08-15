@@ -227,171 +227,192 @@ export default function Dashboard() {
           <div className="text font-medium pb-[0.5em]">Escolha o personagem:</div>
           <div className="flex gap-4">
             <div className=" flex flex-wrap gap-[2em]">
-              {selectedCampaign?.characters.map((personagem) => (
-                <div key={personagem.id} className="flex">
-                  <div className="flex flex-col items-center gap-[0.5em] w-[9.5em] px-[1em] relative">
-                    <img
-                      src={personagem.icon}
-                      alt={personagem.name}
-                      className="size-[7.5em] aspect-square object-cover rounded-full select-none"
-                      draggable={false}
-                    />
-                    <input
-                      className="text-center font-bold text-2xl w-full focus:outline-none border-b-2 border-rose-700"
-                      type="text"
-                      value={personagem.name}
-                      onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "name")}
-                    />
+              <AnimatePresence>
+                {selectedCampaign?.characters.map((personagem) => (
+                  <motion.div
+                    key={personagem.id}
+                    className="flex"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}>
+                    <div className="flex flex-col items-center gap-[0.5em] w-[9.5em] px-[1em] relative">
+                      <img
+                        src={personagem.icon}
+                        alt={personagem.name}
+                        className="size-[7.5em] aspect-square object-cover rounded-full select-none"
+                        draggable={false}
+                      />
+                      <input
+                        className="text-center font-bold text-2xl w-full focus:outline-none border-b-2 border-rose-700"
+                        type="text"
+                        value={personagem.name}
+                        onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "name")}
+                      />
 
-                    <button
-                      className="w-fit font-bold  p-[0.5em] rounded-full size-[2.5em] absolute cursor-pointer bottom-[2.5em] left-[1em] transition-all duration-200 bg-gray-700 hover:bg-gray-800"
-                      onClick={() => handleCopyUrl(`${selectedCampaign.id}/${personagem.id}`)} // Chama a função com o ID da campanha
-                    >
-                      <img src="copy.png" alt="Copiar URL" className="w-full h-full object-cover" draggable={false} />
-                    </button>
+                      <button
+                        className="w-fit font-bold  p-[0.5em] rounded-full size-[2.5em] absolute cursor-pointer bottom-[2.5em] left-[1em] transition-all duration-200 bg-gray-700 hover:bg-gray-800"
+                        onClick={() => handleCopyUrl(`${selectedCampaign.id}/${personagem.id}`)} // Chama a função com o ID da campanha
+                      >
+                        <img src="copy.png" alt="Copiar URL" className="w-full h-full object-cover" draggable={false} />
+                      </button>
 
-                    <div
-                      className="rounded-full size-[2em] absolute bottom-[2.5em] right-[1em] cursor-pointer z-0 outline-2"
-                      style={{ backgroundColor: personagem.color }}
-                      onClick={() => {
-                        setVisibleColorPickerId(personagem.id);
-                      }}
-                    />
-
-                    {visibleColorPickerId === personagem.id && (
-                      <div className="absolute z-0 right-[1em] bottom-[-1em]" onClick={(e) => e.stopPropagation()}>
-                        <Colorful color={tempColor} onChange={(color) => setTempColor(color.hex)} disableAlpha={true} />
-                        <div className="flex gap-2 mt-2">
-                          <button
-                            onClick={() => {
-                              handleCharacterDataChange(tempColor, personagem.id, "color");
-                              setVisibleColorPickerId(null);
-                            }}
-                            className="w-full font-semibold bg-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]">
-                            Salvar
-                          </button>
-                          <button
-                            onClick={() => setVisibleColorPickerId(null)}
-                            className="w-full font-semibold border-[0.15em] border-rose-700 bg-white px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]">
-                            Cancelar
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-[0.5em]">
-                    <div className="flex flex-col gap-2">
-                      {personagem.stats.map((stat) => {
-                        if (stat.max !== undefined) {
-                          return (
-                            <div key={stat.name} className="flex gap-[0.5em] items-center ">
-                              <div className="min-w-[4.75em] w-fit font-bold">{stat.name}</div>
-                              <div className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
-                                <div
-                                  className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
-                                  style={{
-                                    width: `${(stat.value / stat.max) * 100}%`,
-                                    backgroundColor: stat.color,
-                                  }}
-                                />
-                                <button
-                                  type="button"
-                                  className="z-20 cursor-pointer"
-                                  onClick={() =>
-                                    handleCharacterDataChange(stat.value - 1, personagem.id, "statValue", stat.name)
-                                  }>
-                                  <img
-                                    src="arrow.png"
-                                    className="size-[0.75em] object-contain"
-                                    alt="Aumentar"
-                                    draggable={false}
+                      <div
+                        className="rounded-full size-[2em] absolute bottom-[2.5em] right-[1em] cursor-pointer z-0 outline-2"
+                        style={{ backgroundColor: personagem.color }}
+                        onClick={() => {
+                          setVisibleColorPickerId(personagem.id);
+                        }}
+                      />
+                      <AnimatePresence>
+                        {visibleColorPickerId === personagem.id && (
+                          <motion.div
+                            className="absolute z-0 right-[1em] bottom-[-1em]"
+                            onClick={(e) => e.stopPropagation()}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.1 }}>
+                            <Colorful
+                              color={tempColor}
+                              onChange={(color) => setTempColor(color.hex)}
+                              disableAlpha={true}
+                            />
+                            <div className="flex gap-2 mt-2">
+                              <button
+                                onClick={() => {
+                                  handleCharacterDataChange(tempColor, personagem.id, "color");
+                                  setVisibleColorPickerId(null);
+                                }}
+                                className="w-full font-semibold bg-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]">
+                                Salvar
+                              </button>
+                              <button
+                                onClick={() => setVisibleColorPickerId(null)}
+                                className="w-full font-semibold border-[0.15em] border-rose-700 bg-white px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]">
+                                Cancelar
+                              </button>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <div className="flex flex-col gap-[0.5em]">
+                      <div className="flex flex-col gap-2">
+                        {personagem.stats.map((stat) => {
+                          if (stat.max !== undefined) {
+                            return (
+                              <div key={stat.name} className="flex gap-[0.5em] items-center ">
+                                <div className="min-w-[4.75em] w-fit font-bold">{stat.name}</div>
+                                <div className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
+                                  <motion.div
+                                    className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
+                                    style={{
+                                      width: `${(stat.value / stat.max) * 100}%`,
+                                      backgroundColor: stat.color,
+                                    }}
+                                    initial={false}
+                                    animate={{ width: `${(stat.value / stat.max) * 100}%` }}
                                   />
-                                </button>
-                                <div className="flex font-semibold z-20">
+                                  <button
+                                    type="button"
+                                    className="z-20 cursor-pointer"
+                                    onClick={() =>
+                                      handleCharacterDataChange(stat.value - 1, personagem.id, "statValue", stat.name)
+                                    }>
+                                    <img
+                                      src="arrow.png"
+                                      className="size-[0.75em] object-contain"
+                                      alt="Aumentar"
+                                      draggable={false}
+                                    />
+                                  </button>
+                                  <div className="flex font-semibold z-20">
+                                    <input
+                                      className="w-[3ch] text-center focus:outline-none bg-transparent"
+                                      type="number"
+                                      value={stat.value}
+                                      onChange={(e) =>
+                                        handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
+                                      }
+                                    />
+                                    /
+                                    <input
+                                      className="w-[3ch] text-center focus:outline-none bg-transparent"
+                                      type="number"
+                                      value={stat.max}
+                                      onChange={(e) =>
+                                        handleCharacterDataChange(e.target.value, personagem.id, "statMax", stat.name)
+                                      }
+                                    />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="z-20 cursor-pointer"
+                                    onClick={() =>
+                                      handleCharacterDataChange(stat.value + 1, personagem.id, "statValue", stat.name)
+                                    }>
+                                    <img
+                                      src="arrow.png"
+                                      className="size-[0.75em] object-contain rotate-180"
+                                      alt="Aumentar"
+                                      draggable={false}
+                                    />
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
+                      <div className="flex gap-2">
+                        {personagem.stats.map((stat) => {
+                          if (stat.max === undefined) {
+                            return (
+                              <div key={stat.name} className="flex gap-[0.5em] items-center">
+                                <div className="w-fit font-bold">{stat.name}</div>
+                                {typeof stat.value === "number" && (
                                   <input
-                                    className="w-[3ch] text-center focus:outline-none bg-transparent"
+                                    className="w-[3ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
                                     type="number"
                                     value={stat.value}
                                     onChange={(e) =>
                                       handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
                                     }
                                   />
-                                  /
+                                )}
+                                {typeof stat.value === "string" && (
                                   <input
-                                    className="w-[3ch] text-center focus:outline-none bg-transparent"
-                                    type="number"
-                                    value={stat.max}
+                                    className="w-[10ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
+                                    type="text"
+                                    value={stat.value}
                                     onChange={(e) =>
-                                      handleCharacterDataChange(e.target.value, personagem.id, "statMax", stat.name)
+                                      handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
                                     }
                                   />
-                                </div>
-                                <button
-                                  type="button"
-                                  className="z-20 cursor-pointer"
-                                  onClick={() =>
-                                    handleCharacterDataChange(stat.value + 1, personagem.id, "statValue", stat.name)
-                                  }>
-                                  <img
-                                    src="arrow.png"
-                                    className="size-[0.75em] object-contain rotate-180"
-                                    alt="Aumentar"
-                                    draggable={false}
+                                )}
+                                {typeof stat.value === "boolean" && (
+                                  <input
+                                    className="size-4 cursor-pointer"
+                                    type="checkbox"
+                                    checked={stat.value}
+                                    onChange={(e) =>
+                                      handleCharacterDataChange(e.target.checked, personagem.id, "statValue", stat.name)
+                                    }
                                   />
-                                </button>
+                                )}
                               </div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })}
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
+                      <div>{/* Botão de Salvar removido */}</div>
                     </div>
-                    <div className="flex gap-2">
-                      {personagem.stats.map((stat) => {
-                        if (stat.max === undefined) {
-                          return (
-                            <div key={stat.name} className="flex gap-[0.5em] items-center">
-                              <div className="w-fit font-bold">{stat.name}</div>
-                              {typeof stat.value === "number" && (
-                                <input
-                                  className="w-[3ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
-                                  type="number"
-                                  value={stat.value}
-                                  onChange={(e) =>
-                                    handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
-                                  }
-                                />
-                              )}
-                              {typeof stat.value === "string" && (
-                                <input
-                                  className="w-[10ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
-                                  type="text"
-                                  value={stat.value}
-                                  onChange={(e) =>
-                                    handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
-                                  }
-                                />
-                              )}
-                              {typeof stat.value === "boolean" && (
-                                <input
-                                  className="size-4 cursor-pointer"
-                                  type="checkbox"
-                                  checked={stat.value}
-                                  onChange={(e) =>
-                                    handleCharacterDataChange(e.target.checked, personagem.id, "statValue", stat.name)
-                                  }
-                                />
-                              )}
-                            </div>
-                          );
-                        }
-                        return null;
-                      })}
-                    </div>
-                    <div>{/* Botão de Salvar removido */}</div>
-                  </div>
-                </div>
-              ))}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -404,58 +425,64 @@ export default function Dashboard() {
           </button>
           <div className="font-medium pb-[0.5em]">Escolha a campanha:</div>
           <div className="flex flex-wrap gap-4">
-            {campanhas.map((campanha) => {
-              const systemDetails = systemsData?.[campanha.system];
-              return (
-                <div
-                  key={campanha.id}
-                  className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em]`}
-                  style={
-                    systemDetails
-                      ? {
-                          background: `linear-gradient(0deg, ${systemDetails.bg_from_color} 0%, ${systemDetails.bg_to_color} 100%)`,
-                        }
-                      : {
-                          background: `linear-gradient(0deg, #621333) 0%,  #CF5353 100%)`,
-                        }
-                  }>
-                  <img
-                    src={systemDetails ? systemDetails.image_name : "generico.webp"}
-                    className="w-[15em] h-[8em] object-contain"
-                    alt={campanha.system}
-                  />
-                  <div className="text-2xl font-bold py-[0.5em]">{campanha.name}</div>
-                  <div className="flex flex-col gap-[0.2em] w-full">
-                    <div className="flex justify-between w-full">
-                      <div className="font-bold">ID:</div>
-                      {campanha.id}
-                    </div>
-                    <div className="flex justify-between w-full">
-                      <div className="font-bold">Jogadores:</div>
-                      {campanha.characters.length}
-                    </div>
+            <AnimatePresence>
+              {campanhas.map((campanha) => {
+                const systemDetails = systemsData?.[campanha.system];
+                return (
+                  <motion.div
+                    key={campanha.id}
+                    className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em]`}
+                    style={
+                      systemDetails
+                        ? {
+                            background: `linear-gradient(0deg, ${systemDetails.bg_from_color} 0%, ${systemDetails.bg_to_color} 100%)`,
+                          }
+                        : {
+                            background: `linear-gradient(0deg, #621333) 0%,  #CF5353 100%)`,
+                          }
+                    }
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}>
+                    <img
+                      src={systemDetails ? systemDetails.image_name : "generico.webp"}
+                      className="w-[15em] h-[8em] object-contain"
+                      alt={campanha.system}
+                    />
+                    <div className="text-2xl font-bold py-[0.5em]">{campanha.name}</div>
+                    <div className="flex flex-col gap-[0.2em] w-full">
+                      <div className="flex justify-between w-full">
+                        <div className="font-bold">ID:</div>
+                        {campanha.id}
+                      </div>
+                      <div className="flex justify-between w-full">
+                        <div className="font-bold">Jogadores:</div>
+                        {campanha.characters.length}
+                      </div>
 
-                    <div className="flex justify-between w-full">
-                      <div className="font-bold">Criação:</div>
-                      {campanha.date}
+                      <div className="flex justify-between w-full">
+                        <div className="font-bold">Criação:</div>
+                        {campanha.date}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex gap-[0.5em]">
-                    <button
-                      className="w-fit font-bold bg-white px-[1.2em] pt-[0.15em] pb-[0.25em] rounded-[1em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-300 "
-                      onClick={() => handleSelectCampaign(campanha)}>
-                      Selecionar
-                    </button>
-                    <button
-                      className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-700"
-                      onClick={() => handleCopyUrl(campanha.id.toString())} // Chama a função com o ID da campanha
-                    >
-                      <img src="copy.png" alt="Copiar URL" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                    <div className="flex gap-[0.5em]">
+                      <button
+                        className="w-fit font-bold bg-white px-[1.2em] pt-[0.15em] pb-[0.25em] rounded-[1em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-300 "
+                        onClick={() => handleSelectCampaign(campanha)}>
+                        Selecionar
+                      </button>
+                      <button
+                        className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-700"
+                        onClick={() => handleCopyUrl(campanha.id.toString())} // Chama a função com o ID da campanha
+                      >
+                        <img src="copy.png" alt="Copiar URL" />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
         </div>
       )}

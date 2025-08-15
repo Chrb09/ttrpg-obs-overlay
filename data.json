@@ -46,7 +46,7 @@
           },
           {
             "name": "Fatigado",
-            "value": false
+            "value": true
           }
         ]
       },
@@ -87,7 +87,7 @@
           },
           {
             "name": "Gloria",
-            "value": 2
+            "value": 0
           },
           {
             "name": "Fatigado",
@@ -442,6 +442,134 @@
             "value": 1
           }
         ]
+      },
+      {
+        "id": 2,
+        "name": "Justine Fontenele",
+        "icon": "/uploads/3/2.png",
+        "color": "#f65a92",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Heros Xenakis",
+        "icon": "/uploads/3/3.png",
+        "color": "#cfcfcf",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Kraggith e seus 19 irmãos",
+        "icon": "/uploads/3/4.png",
+        "color": "#55b966",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Reptor",
+        "icon": "/uploads/3/5.png",
+        "color": "#d98757",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ]
       }
     ]
   },
@@ -456,6 +584,108 @@
         "name": "Ni",
         "icon": "/uploads/4/1.png",
         "color": "#976ae3",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Estresse",
+            "value": 1,
+            "max": 1,
+            "color": "#25576E"
+          },
+          {
+            "name": "Esperança",
+            "value": 1,
+            "max": 1,
+            "color": "#D08F16"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Evasão",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Sak",
+        "icon": "/uploads/4/2.png",
+        "color": "#b0dfe7",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Estresse",
+            "value": 1,
+            "max": 1,
+            "color": "#25576E"
+          },
+          {
+            "name": "Esperança",
+            "value": 1,
+            "max": 1,
+            "color": "#D08F16"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Evasão",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Luis",
+        "icon": "/uploads/4/3.png",
+        "color": "#4fe68c",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Estresse",
+            "value": 1,
+            "max": 1,
+            "color": "#25576E"
+          },
+          {
+            "name": "Esperança",
+            "value": 1,
+            "max": 1,
+            "color": "#D08F16"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Evasão",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Amanda",
+        "icon": "/uploads/4/4.png",
+        "color": "#feb951",
         "stats": [
           {
             "name": "Vida",

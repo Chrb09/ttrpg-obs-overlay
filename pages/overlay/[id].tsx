@@ -6,6 +6,7 @@ import "../../src/app/globals.css";
 import { Manufacturing_Consent } from "next/font/google";
 
 const manufacturingConsent = Manufacturing_Consent({
+  subsets: ["latin"],
   weight: "400",
 });
 
@@ -14,7 +15,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 // Interfaces para tipagem dos dados
 interface Stat {
   name: string;
-  value: number;
+  value: number | boolean | string;
   max?: number;
   color?: string;
 }
@@ -64,6 +65,12 @@ function Overlay() {
                   alt={character.name}
                   className="w-[12em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] select-none"
                 />
+                {fatigadoStat?.value == true && (
+                  <img
+                    src="/overlays/mythic/fatigado.png"
+                    className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] select-none"
+                  />
+                )}
                 <MythicColor
                   color={character.color !== "" ? character.color : undefined}
                   className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] select-none"
@@ -152,7 +159,11 @@ function Overlay() {
                             <div
                               className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
                               style={{
-                                width: `${(stat.value / stat.max) * 100}%`,
+                                width: `${
+                                  typeof stat.value === "number" && typeof stat.max === "number"
+                                    ? (stat.value / stat.max) * 100
+                                    : 0
+                                }%`,
                                 backgroundColor: stat.color,
                               }}
                             />

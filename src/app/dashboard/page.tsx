@@ -198,8 +198,15 @@ export default function Dashboard() {
   return (
     <div className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[5em]">
       <div className="flex justify-between">
-        <div className="text-2xl font-bold text-rose-700 pb-[0.5em]">Home</div>
-        <div className="text-3xl font-bold text-rose-700">TTRPG OBS Overlay</div>
+        <div
+          className="text-2xl font-bold text-rose-700 pb-[0.5em] cursor-pointer"
+          onClick={() => setSelectedCampaignId(null)}>
+          Home {selectedCampaignId && <span> {`> ${selectedCampaign?.name}`}</span>}
+        </div>
+        <div className="text-3xl font-bold text-gray-900 flex items-center gap-[0.5em]">
+          <img src="logo.png" className="size-[2.5em]" alt="" />
+          TTRPG OBS Overlay
+        </div>
       </div>
       {showAddCampaignForm && !selectedCampaignId && (
         <div>
@@ -221,7 +228,7 @@ export default function Dashboard() {
             <div className="flex flex-col gap-[0.2em]">
               Sistema
               <select
-                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
+                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em] cursor-pointer"
                 value={newCampaignData.name}
                 onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}
                 required>
@@ -234,12 +241,12 @@ export default function Dashboard() {
             </div>
             <div className="flex justify-between gap-[0.75em]">
               <button
-                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer  transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
                 type="submit">
                 Criar
               </button>
               <button
-                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+                className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
                 type="button"
                 onClick={() => setShowAddCampaignForm(false)}>
                 Cancelar
@@ -288,12 +295,12 @@ export default function Dashboard() {
             </div>
             <div className="flex justify-between gap-[0.75em]">
               <button
-                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer  transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
                 type="submit">
                 Criar
               </button>
               <button
-                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+                className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
                 type="button"
                 onClick={() => setShowAddCharacterForm(false)}>
                 Cancelar
@@ -306,12 +313,12 @@ export default function Dashboard() {
         <div className="flex flex-col flex-wrap gap-[1em]">
           <div className="flex gap-[0.5em]">
             <button
-              className="w-fit font-semibold bg-rose-700 px-[1em]   pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+              className="w-fit font-semibold bg-rose-700  px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
               onClick={() => setShowAddCharacterForm(true)}>
               + Novo Personagem
             </button>
             <button
-              className="w-fit font-semibold bg-rose-700 px-[1em]   pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+              className="w-fit font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
               onClick={() => setSelectedCampaignId(null)}>
               Voltar
             </button>
@@ -325,7 +332,8 @@ export default function Dashboard() {
                     <img
                       src={personagem.icon}
                       alt={personagem.name}
-                      className="size-[7.5em] aspect-square object-cover rounded-full"
+                      className="size-[7.5em] aspect-square object-cover rounded-full select-none"
+                      draggable={false}
                     />
                     <input
                       className="text-center font-bold text-2xl w-full focus:outline-none border-b-2 border-rose-700"
@@ -335,10 +343,10 @@ export default function Dashboard() {
                     />
 
                     <button
-                      className="w-fit font-bold  p-[0.5em] rounded-full size-[2.5em] absolute cursor-pointer bottom-[2.5em] left-[1em] bg-gray-800"
+                      className="w-fit font-bold  p-[0.5em] rounded-full size-[2.5em] absolute cursor-pointer bottom-[2.5em] left-[1em] transition-all duration-200 bg-gray-700 hover:bg-gray-800"
                       onClick={() => handleCopyUrl(`${selectedCampaign.id}/${personagem.id}`)} // Chama a função com o ID da campanha
                     >
-                      <img src="copy.png" alt="Copiar URL" className="w-full h-full object-cover" />
+                      <img src="copy.png" alt="Copiar URL" className="w-full h-full object-cover" draggable={false} />
                     </button>
 
                     <div
@@ -358,12 +366,12 @@ export default function Dashboard() {
                               handleCharacterDataChange(tempColor, personagem.id, "color");
                               setVisibleColorPickerId(null);
                             }}
-                            className="flex-1 bg-rose-700 text-white rounded-md px-4 py-2 cursor-pointer">
+                            className="w-full font-semibold bg-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]">
                             Salvar
                           </button>
                           <button
                             onClick={() => setVisibleColorPickerId(null)}
-                            className="flex-1 bg-gray-500 text-white rounded-md px-4 py-2 cursor-pointer">
+                            className="w-full font-semibold border-[0.15em] border-rose-700 bg-white px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]">
                             Cancelar
                           </button>
                         </div>
@@ -391,7 +399,12 @@ export default function Dashboard() {
                                   onClick={() =>
                                     handleCharacterDataChange(stat.value - 1, personagem.id, "statValue", stat.name)
                                   }>
-                                  <img src="arrow.png" className="size-[0.75em] object-contain" alt="Aumentar" />
+                                  <img
+                                    src="arrow.png"
+                                    className="size-[0.75em] object-contain"
+                                    alt="Aumentar"
+                                    draggable={false}
+                                  />
                                 </button>
                                 <div className="flex font-semibold z-20">
                                   <input
@@ -422,6 +435,7 @@ export default function Dashboard() {
                                     src="arrow.png"
                                     className="size-[0.75em] object-contain rotate-180"
                                     alt="Aumentar"
+                                    draggable={false}
                                   />
                                 </button>
                               </div>
@@ -483,7 +497,7 @@ export default function Dashboard() {
       ) : (
         <div className="flex flex-col flex-wrap gap-[1em]">
           <button
-            className="w-fit font-semibold bg-rose-700 px-[1em]   pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer mt-4"
+            className="w-fit font-semibold bg-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
             onClick={() => setShowAddCampaignForm(true)}>
             + Nova Campanha
           </button>
@@ -527,12 +541,12 @@ export default function Dashboard() {
                   </div>
                   <div className="flex gap-[0.5em]">
                     <button
-                      className="w-fit font-bold bg-white px-[1.2em] pt-[0.15em] pb-[0.25em] rounded-[1em] text-[#1E212F] cursor-pointer mt-4"
+                      className="w-fit font-bold bg-white px-[1.2em] pt-[0.15em] pb-[0.25em] rounded-[1em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-300 "
                       onClick={() => handleSelectCampaign(campanha)}>
                       Selecionar
                     </button>
                     <button
-                      className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4"
+                      className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-700"
                       onClick={() => handleCopyUrl(campanha.id.toString())} // Chama a função com o ID da campanha
                     >
                       <img src="copy.png" alt="Copiar URL" />

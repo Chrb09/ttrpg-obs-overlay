@@ -1,5 +1,6 @@
 "use client";
 import { Colorful } from "@uiw/react-color";
+import { AnimatePresence, motion } from "motion/react";
 import React, { useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
 
@@ -208,107 +209,7 @@ export default function Dashboard() {
           TTRPG OBS Overlay
         </div>
       </div>
-      {showAddCampaignForm && !selectedCampaignId && (
-        <div>
-          <div className="absolute top-0 left-0 z-10 w-full h-full bg-[#4608097e]" />
-          <form
-            className="absolute top-[50%] left-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] z-20 flex flex-col gap-[1em] bg-white justify-center px-[1.5em] py-[2em] rounded-[1.5em]"
-            onSubmit={handleAddCampaign}>
-            <div className="flex flex-col gap-[0.2em]">
-              Nome da campanha
-              <input
-                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
-                type="text"
-                placeholder="Nome da Campanha"
-                value={newCampaignData.name}
-                onChange={(e) => setNewCampaignData({ ...newCampaignData, name: e.target.value })}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-[0.2em]">
-              Sistema
-              <select
-                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em] cursor-pointer"
-                value={newCampaignData.name}
-                onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}
-                required>
-                {Object.keys(systemsData).map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-between gap-[0.75em]">
-              <button
-                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer  transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
-                type="submit">
-                Criar
-              </button>
-              <button
-                className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
-                type="button"
-                onClick={() => setShowAddCampaignForm(false)}>
-                Cancelar
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
 
-      {showAddCharacterForm && selectedCampaignId && (
-        <div>
-          <div className="absolute top-0 left-0 z-10 w-full h-full bg-[#4608097e]" />
-          <form
-            className="absolute top-[50%] left-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] z-20 flex flex-col gap-[1em] bg-white justify-center px-[1.5em] py-[2em] rounded-[1.5em]"
-            onSubmit={handleAddCharacter}>
-            <div className="flex flex-col gap-[0.2em]">
-              Nome do personagem
-              <input
-                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
-                type="text"
-                placeholder="Nome da Campanha"
-                value={newCharacterData.name}
-                onChange={(e) => setNewCharacterData({ ...newCharacterData, name: e.target.value })}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-[0.2em]">
-              Foto do personagem
-              <input
-                className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
-                type="file"
-                onChange={(e) => {
-                  if (e.target.files) {
-                    setNewCharacterFile(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-[0.2em]">
-              Cor do personagem
-              <Colorful
-                color={newCharacterData.color}
-                onChange={(color) => setNewCharacterData({ ...newCharacterData, color: color.hex })}
-                disableAlpha={true}
-              />
-            </div>
-            <div className="flex justify-between gap-[0.75em]">
-              <button
-                className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer  transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
-                type="submit">
-                Criar
-              </button>
-              <button
-                className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
-                type="button"
-                onClick={() => setShowAddCharacterForm(false)}>
-                Cancelar
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
       {selectedCampaignId ? (
         <div className="flex flex-col flex-wrap gap-[1em]">
           <div className="flex gap-[0.5em]">
@@ -358,7 +259,7 @@ export default function Dashboard() {
                     />
 
                     {visibleColorPickerId === personagem.id && (
-                      <div className="absolute z-50 right-[1em] bottom-[-1em]" onClick={(e) => e.stopPropagation()}>
+                      <div className="absolute z-0 right-[1em] bottom-[-1em]" onClick={(e) => e.stopPropagation()}>
                         <Colorful color={tempColor} onChange={(color) => setTempColor(color.hex)} disableAlpha={true} />
                         <div className="flex gap-2 mt-2">
                           <button
@@ -558,6 +459,119 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+      <AnimatePresence>
+        {showAddCampaignForm && !selectedCampaignId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}>
+            <div className="absolute top-0 left-0 z-10 w-full h-full bg-[#4608097e]" />
+            <form
+              className="absolute top-[50%] left-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] z-20 flex flex-col gap-[1em] bg-white justify-center px-[1.5em] py-[2em] rounded-[1.5em]"
+              onSubmit={handleAddCampaign}>
+              <div className="flex flex-col gap-[0.2em]">
+                Nome da campanha
+                <input
+                  className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
+                  type="text"
+                  placeholder="Nome da Campanha"
+                  value={newCampaignData.name}
+                  onChange={(e) => setNewCampaignData({ ...newCampaignData, name: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-[0.2em]">
+                Sistema
+                <select
+                  className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em] cursor-pointer"
+                  value={newCampaignData.name}
+                  onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}
+                  required>
+                  {Object.keys(systemsData).map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex justify-between gap-[0.75em]">
+                <button
+                  className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer  transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
+                  type="submit">
+                  Criar
+                </button>
+                <button
+                  className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
+                  type="button"
+                  onClick={() => setShowAddCampaignForm(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showAddCharacterForm && selectedCampaignId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}>
+            <div className="absolute top-0 left-0 z-50 w-full h-full bg-[#4608097e]" />
+            <form
+              className="absolute top-[50%] left-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] z-60 flex flex-col gap-[1em] bg-white justify-center px-[1.5em] py-[2em] rounded-[1.5em]"
+              onSubmit={handleAddCharacter}>
+              <div className="flex flex-col gap-[0.2em]">
+                Nome do personagem
+                <input
+                  className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
+                  type="text"
+                  placeholder="Nome do personagem"
+                  value={newCharacterData.name}
+                  onChange={(e) => setNewCharacterData({ ...newCharacterData, name: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-[0.2em]">
+                Foto do personagem
+                <input
+                  className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
+                  type="file"
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      setNewCharacterFile(e.target.files[0]);
+                    }
+                  }}
+                />
+              </div>
+              <div className="flex flex-col gap-[0.2em]">
+                Cor do personagem
+                <Colorful
+                  color={newCharacterData.color}
+                  onChange={(color) => setNewCharacterData({ ...newCharacterData, color: color.hex })}
+                  disableAlpha={true}
+                />
+              </div>
+              <div className="flex justify-between gap-[0.75em]">
+                <button
+                  className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer  transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
+                  type="submit">
+                  Criar
+                </button>
+                <button
+                  className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
+                  type="button"
+                  onClick={() => setShowAddCharacterForm(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

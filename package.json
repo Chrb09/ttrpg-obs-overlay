@@ -10,10 +10,13 @@
     "start-and-open": "concurrently \"npm run dev\" \"TIMEOUT 5 && start http://localhost:3000/dashboard\""
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
     "@uiw/react-color": "^2.7.3",
     "formidable": "^3.5.4",
+    "motion": "^12.23.12",
     "next": "15.4.6",
     "react": "19.1.0",
+    "react-awesome-reveal": "^4.3.1",
     "react-dom": "19.1.0",
     "swr": "^2.3.5"
   },

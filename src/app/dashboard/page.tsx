@@ -198,7 +198,7 @@ export default function Dashboard() {
 
   return (
     <div className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[5em]">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center pb-[1.5em]">
         <div
           className="text-2xl font-bold text-rose-700 pb-[0.5em] cursor-pointer flex gap-[0.35em]"
           onClick={() => setSelectedCampaignId(null)}>

@@ -27,6 +27,19 @@
       { "name": "Nível", "value": 1 }
     ]
   },
+  "Ordem Paranormal - Determinação": {
+    "bg_from_color": "#2C2D88",
+    "bg_to_color": "#431A4B",
+    "image_name": "ordem.png",
+    "stats": [
+      { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
+      { "name": "Determinação", "value": 1, "max": 1, "color": "#0089a9" },
+      { "name": "Defesa", "value": 1 },
+      { "name": "Bloqueio", "value": 1 },
+      { "name": "Esquiva", "value": 1 },
+      { "name": "Nível", "value": 1 }
+    ]
+  },
   "Tormenta": {
     "bg_from_color": "#A62124",
     "bg_to_color": "#460809",

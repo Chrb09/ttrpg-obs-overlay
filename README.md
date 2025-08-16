@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+![Logo](public/Banner.png)
 
-## Getting Started
+Ferramenta para mostrar as fichas de personagens de RPG no OBS
 
-First, run the development server:
+### Suporte a:
+
+- Ordem Paranormal (Normal e com Determinação)
+- Tormenta
+- Mythic Bastionland
+- Daggerheart
+- Qualquer outro sistema ( Veja seção de sistemas personalizados )
+
+## Como rodar o projeto
+
+É necessario instalar o node.js e npm para rodar o projeto
+
+Após a instalação do node e npm é necessário abrir o terminal e entrar na pasta do projeto
 
 ```bash
+// instalar dependências
+npm i
+
+// iniciar servidor
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Após isso é só abrir localhost:3000/dashboard no seu navegador para criar e editar as fichas do seu personagem
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Para adicionar o overlay das fichas no seu obs é só clicar no botão de copiar da campanha ( para todos os personagens ) ou de um personagem especifico
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Sistemas Personalizados
 
-## Learn More
+Para criar os próprios sistemas você precisa adiciona-lo no arquivo systems.json
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```json
+"Nome do Sistema": {
+    "bg_from_color": "corDeBaixo",
+    "bg_to_color": "corDeCima",
+    "image_name": "nomeImagem.png",
+    "stats": [
+      { "name": "Stat com barra", "value": 1, "max": 1, "color": "corBarra" },
+      { "name": "Stat sem barra", "value": 1 },
+      { "name": "Stat String", "value": "Texto" },
+      { "name": "Stat Boolean", "value": false }
+    ]
+  }
+```

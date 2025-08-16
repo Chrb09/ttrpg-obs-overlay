@@ -282,6 +282,9 @@ export default function Dashboard() {
           <div className="text font-medium pb-[0.5em]">Escolha o personagem:</div>
           <div className="flex gap-4">
             <div className="grid grid-cols-3 max-2xl:grid-cols-2 gap-[2em] max-xl:text-[0.9em]">
+              {selectedCampaign?.characters.length === 0 && (
+                <div className="text-center">Nenhum personagem encontrado.</div>
+              )}
               <AnimatePresence>
                 {selectedCampaign?.characters.map((personagem) => (
                   <motion.div
@@ -480,6 +483,7 @@ export default function Dashboard() {
           </button>
           <div className="font-medium pb-[0.5em]">Escolha a campanha:</div>
           <div className="grid max-sm:grid-cols-1 max-lg:grid-cols-2 max-xl:grid-cols-3 grid-cols-4 gap-4 w-full justify-center">
+            {campanhas.length === 0 && <div className="text-center">Nenhuma campanha encontrada.</div>}
             <AnimatePresence>
               {campanhas.map((campanha) => {
                 const systemDetails = systemsData?.[campanha.system];

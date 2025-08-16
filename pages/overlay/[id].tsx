@@ -50,7 +50,7 @@ function Overlay() {
   switch (data.system) {
     case "Mythic Bastionland":
       return (
-        <div className="flex flex-rol justify-between flex-wrap gap-8 p-4">
+        <div className="flex flex-rol justify-between flex-wrap gap-8 px-[2em]">
           {data.characters.map((character) => {
             const clarezaStat = character.stats.find((stat) => stat.name === "Clareza");
             const vigorStat = character.stats.find((stat) => stat.name === "Vigor");

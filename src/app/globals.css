@@ -6,7 +6,7 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
-  --breakpoint-2xl: 1536px;
+  --breakpoint-2xl: 1636px;
 }
 
 * {
@@ -19,12 +19,41 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+input[type="file"] {
+  font-family: inherit;
+  font-size: 0.9em;
+  padding-block: 0;
+  padding-left: 0;
+  font-weight: 500;
+  color: #1e212f;
+}
+input[type="file"]::file-selector-button {
+  cursor: pointer;
+  color: #1e212f;
+  background-color: #d1d5db;
+  font-family: inherit;
+  background: none;
+  outline-color: #d1d5db;
+  border-radius: 0.7em;
+  outline-width: 0.15em;
+  outline-style: solid;
+  padding-block: 0.35em;
+  padding-inline: 0.5em;
+  font-weight: 600;
+  transition: all 0.3s, background-color 0.3s;
+}
+input[type="file"]::file-selector-button:hover {
+  outline-color: #c70036;
+  color: #ffffff;
+  background-color: #c70036;
+}
+
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
 }
 .container {
-  max-width: 1536px;
+  max-width: 1636px;
   margin-inline: auto;
   padding-left: 0.5rem;
   width: 100%;
@@ -33,7 +62,7 @@ input[type="number"] {
 }
 
 /* 2xl */
-@media (max-width: 1536px) {
+@media (max-width: 1636px) {
   .container {
     max-width: 1280px;
   }

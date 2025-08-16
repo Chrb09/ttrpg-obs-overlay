@@ -2,6 +2,7 @@
 import { Colorful } from "@uiw/react-color";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useState, useEffect } from "react";
+import { Slide, toast, ToastContainer } from "react-toastify";
 import useSWR, { mutate } from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -95,10 +96,30 @@ export default function Dashboard() {
 
     try {
       await navigator.clipboard.writeText(overlayUrl);
-      alert("URL copiada para a área de transferência!");
+      toast.success("URL copiada para a área de transferência!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
     } catch (err) {
       console.error("Falha ao copiar a URL: ", err);
-      alert("Erro ao copiar a URL. Por favor, tente novamente.");
+      toast.error("Erro ao copiar a URL. Por favor, tente novamente.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
     }
   };
 
@@ -163,6 +184,17 @@ export default function Dashboard() {
 
     if (res.ok) {
       setShowAddCampaignForm(false);
+      toast.success("Campanha adicionada com sucesso!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
       setNewCampaignData({ name: "", system: FIXED_SYSTEMS[0] });
       mutate("/api/campanhas");
     }
@@ -188,6 +220,17 @@ export default function Dashboard() {
 
     if (res.ok) {
       setShowAddCharacterForm(false);
+      toast.success("Personagem adicionado com sucesso!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
       setNewCharacterData({ name: "", color: "#ff0000" });
       setNewCharacterFile(null); // Limpa o estado do arquivo
       mutate("/api/campanhas");
@@ -197,8 +240,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[5em]">
-      <div className="flex justify-between items-center pb-[1.5em]">
+    <div className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[3.5em] max-md:!px-[2em]">
+      <div className="flex justify-between items-center pb-[1.5em]  max-md:flex-col-reverse">
         <div
           className="text-2xl font-bold text-rose-700 pb-[0.5em] cursor-pointer flex gap-[0.35em]"
           onClick={() => setSelectedCampaignId(null)}>
@@ -231,19 +274,19 @@ export default function Dashboard() {
               + Novo Personagem
             </button>
             <button
-              className="w-fit font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
+              className="w-fit font-semibold outline-[0.15em] outline-rose-700 px-[1em] outline-offset-[-0.15em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
               onClick={() => setSelectedCampaignId(null)}>
               Voltar
             </button>
           </div>
           <div className="text font-medium pb-[0.5em]">Escolha o personagem:</div>
           <div className="flex gap-4">
-            <div className=" flex flex-wrap gap-[2em]">
+            <div className="grid grid-cols-3 max-2xl:grid-cols-2 gap-[2em] max-xl:text-[0.9em]">
               <AnimatePresence>
                 {selectedCampaign?.characters.map((personagem) => (
                   <motion.div
                     key={personagem.id}
-                    className="flex"
+                    className="flex max-lg:flex-col max-lg:items-center max-lg:gap-[1em]"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -314,8 +357,8 @@ export default function Dashboard() {
                         {personagem.stats.map((stat) => {
                           if (stat.max !== undefined) {
                             return (
-                              <div key={stat.name} className="flex gap-[0.5em] items-center ">
-                                <div className="min-w-[4.75em] w-fit font-bold">{stat.name}</div>
+                              <div key={stat.name} className="flex gap-[0.5em] items-center max-lg:flex-col">
+                                <div className="min-w-[4.75em] w-fit font-bold max-lg:min-w-fit">{stat.name}</div>
                                 <div className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
                                   <motion.div
                                     className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
@@ -378,7 +421,7 @@ export default function Dashboard() {
                           return null;
                         })}
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-[0.9em] flex-wrap justify-center">
                         {personagem.stats.map((stat) => {
                           if (stat.max === undefined) {
                             return (
@@ -406,7 +449,7 @@ export default function Dashboard() {
                                 )}
                                 {typeof stat.value === "boolean" && (
                                   <input
-                                    className="size-4 cursor-pointer"
+                                    className="size-[1em] cursor-pointer"
                                     type="checkbox"
                                     checked={stat.value}
                                     onChange={(e) =>
@@ -436,7 +479,7 @@ export default function Dashboard() {
             + Nova Campanha
           </button>
           <div className="font-medium pb-[0.5em]">Escolha a campanha:</div>
-          <div className="flex flex-wrap gap-4">
+          <div className="grid max-sm:grid-cols-1 max-lg:grid-cols-2 max-xl:grid-cols-3 grid-cols-4 gap-4 w-full justify-center">
             <AnimatePresence>
               {campanhas.map((campanha) => {
                 const systemDetails = systemsData?.[campanha.system];
@@ -480,7 +523,7 @@ export default function Dashboard() {
                     </div>
                     <div className="flex gap-[0.5em]">
                       <button
-                        className="w-fit font-bold bg-white px-[1.2em] pt-[0.15em] pb-[0.25em] rounded-[1em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-300 "
+                        className="w-fit font-bold bg-white px-[1.2em] pt-[0.05em] pb-[0.15em] rounded-[0.75em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-300 "
                         onClick={() => handleSelectCampaign(campanha)}>
                         Selecionar
                       </button>
@@ -488,7 +531,7 @@ export default function Dashboard() {
                         className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-700"
                         onClick={() => handleCopyUrl(campanha.id.toString())} // Chama a função com o ID da campanha
                       >
-                        <img src="copy.png" alt="Copiar URL" />
+                        <img className="size-[1.5em]" src="copy.png" alt="Copiar URL" />
                       </button>
                     </div>
                   </motion.div>
@@ -496,6 +539,7 @@ export default function Dashboard() {
               })}
             </AnimatePresence>
           </div>
+          <ToastContainer />
         </div>
       )}
       <AnimatePresence>
@@ -541,7 +585,7 @@ export default function Dashboard() {
                   Criar
                 </button>
                 <button
-                  className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
+                  className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] outline-offset-[-0.15em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
                   type="button"
                   onClick={() => setShowAddCampaignForm(false)}>
                   Cancelar
@@ -586,7 +630,7 @@ export default function Dashboard() {
                   }}
                 />
               </div>
-              <div className="flex flex-col gap-[0.2em]">
+              <div className="flex flex-col gap-[0.2em] items-center">
                 Cor do personagem
                 <Colorful
                   color={newCharacterData.color}
@@ -601,7 +645,7 @@ export default function Dashboard() {
                   Criar
                 </button>
                 <button
-                  className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
+                  className="w-full font-semibold outline-[0.15em] outline-rose-700 px-[1em] outline-offset-[-0.15em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-rose-700 cursor-pointer transition-all duration-200 hover:bg-rose-700 hover:text-white hover:translate-y-[-0.1em]"
                   type="button"
                   onClick={() => setShowAddCharacterForm(false)}>
                   Cancelar

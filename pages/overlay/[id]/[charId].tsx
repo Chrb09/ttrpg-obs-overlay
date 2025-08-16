@@ -201,11 +201,19 @@ function OverlayCharacter() {
                       return (
                         <div key={stat.name} className="flex gap-[0.5em] items-center">
                           <div className="w-fit font-bold">{stat.name}</div>
-                          <div
-                            className={`w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
-                            style={{ borderColor: character.color }}>
-                            {stat.value}
-                          </div>
+                          {typeof stat.value !== "boolean" ? (
+                            <div
+                              className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                              style={{ borderColor: character.color }}>
+                              {stat.value}
+                            </div>
+                          ) : (
+                            <div
+                              className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                              style={{ borderColor: character.color }}>
+                              {stat.value ? "Sim" : "Não"}
+                            </div>
+                          )}
                         </div>
                       );
                     }

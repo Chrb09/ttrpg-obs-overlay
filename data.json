@@ -9,7 +9,7 @@
         "id": 1,
         "name": "Bia",
         "icon": "/uploads/1/1.png",
-        "color": "#5689D4",
+        "color": "#4c78d5",
         "stats": [
           {
             "name": "Clareza",
@@ -46,7 +46,7 @@
           },
           {
             "name": "Fatigado",
-            "value": true
+            "value": false
           }
         ]
       },
@@ -575,7 +575,7 @@
   },
   {
     "id": 4,
-    "name": "Daggerheart",
+    "name": "Coração de oceano",
     "system": "Daggerheart",
     "date": "14/08/2025",
     "characters": [
@@ -683,7 +683,7 @@
       },
       {
         "id": 4,
-        "name": "Amanda",
+        "name": "Axeronthia Atropos ",
         "icon": "/uploads/4/4.png",
         "color": "#feb951",
         "stats": [

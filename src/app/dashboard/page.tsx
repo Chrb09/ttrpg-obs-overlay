@@ -39,9 +39,6 @@ interface SystemData {
   };
 }
 
-// Lista de sistemas fixos
-const FIXED_SYSTEMS = ["Mythic Bastionland", "Ordem Paranormal", "Tormenta", "Daggerheart"];
-
 export default function Dashboard() {
   const { data: campanhas, error, isLoading } = useSWR<Campanha[]>("/api/campanhas", fetcher);
   const {
@@ -60,7 +57,7 @@ export default function Dashboard() {
   const [showAddCharacterForm, setShowAddCharacterForm] = useState(false);
   const [newCampaignData, setNewCampaignData] = useState({
     name: "",
-    system: systemsData ? Object.keys(systemsData)[0] : "",
+    system: systemsData ? Object.keys(systemsData)[0] : "Ordem Paranormal",
   });
   const [newCharacterFile, setNewCharacterFile] = useState<File | null>(null);
   const [newCharacterData, setNewCharacterData] = useState({ name: "", color: "#ff0000" });
@@ -237,7 +234,7 @@ export default function Dashboard() {
         theme: "light",
         transition: Slide,
       });
-      setNewCampaignData({ name: "", system: FIXED_SYSTEMS[0] });
+      setNewCampaignData({ name: "", system: Object.keys(systemsData)[0] });
       mutate("/api/campanhas");
     }
   };
@@ -321,8 +318,8 @@ export default function Dashboard() {
             </button>
           </div>
           <div className="text font-medium pb-[0.5em]">Escolha o personagem:</div>
-          <div className="flex gap-4">
-            <div className="grid grid-cols-3 max-2xl:grid-cols-2 gap-[2em] max-xl:text-[0.9em]">
+          <div className="flex gap-4 max-xs:justify-center">
+            <div className="grid grid-cols-3 max-xs:grid-cols-1 max-2xl:grid-cols-2 gap-[2em] max-xl:text-[0.9em]">
               {selectedCampaign?.characters.length === 0 && (
                 <div className="text-center">Nenhum personagem encontrado.</div>
               )}
@@ -339,7 +336,7 @@ export default function Dashboard() {
                       <img
                         src={personagem.icon}
                         alt={personagem.name}
-                        className="max-size-[7.5em] aspect-square object-cover rounded-full select-none"
+                        className="size-[6.5em] aspect-square object-cover rounded-full select-none"
                         draggable={false}
                       />
                       <input
@@ -397,20 +394,26 @@ export default function Dashboard() {
                       </AnimatePresence>
                     </div>
                     <div className="flex flex-col gap-[0.5em]">
-                      <div className="flex gap-[0.5em]">
-                        <div className="flex flex-col gap-[0.5em]">
+                      <div className="flex gap-[0.5em] relative max-xs:justify-center">
+                        <div className="flex flex-col gap-[0.5em] max-sm:absolute max-sm:gap-[1.65em] max-sm:left-[50%] max-sm:translate-x-[-50%] max-sm:text-center max-sm:items-center">
                           {personagem.stats.map((stat) => {
                             if (stat.max !== undefined) {
-                              return <div className="w-fit font-bold max-lg:min-w-fit">{stat.name}</div>;
+                              return (
+                                <div key={stat.name} className="w-fit font-bold max-lg:min-w-fit">
+                                  {stat.name}
+                                </div>
+                              );
                             }
                             return null;
                           })}
                         </div>
-                        <div className="flex flex-col gap-[0.5em]">
+                        <div className="flex flex-col gap-[0.5em] max-sm:gap-[1.55em] max-sm:pt-[1.55em]">
                           {personagem.stats.map((stat) => {
                             if (stat.max !== undefined) {
                               return (
-                                <div className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
+                                <div
+                                  key={stat.name}
+                                  className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
                                   <motion.div
                                     className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
                                     style={{
@@ -532,62 +535,65 @@ export default function Dashboard() {
           <div className="grid max-sm:grid-cols-1 max-lg:grid-cols-2 max-xl:grid-cols-3 grid-cols-4 gap-4 w-full justify-center">
             {campanhas.length === 0 && <div className="text-center">Nenhuma campanha encontrada.</div>}
             <AnimatePresence>
-              {campanhas.map((campanha) => {
-                const systemDetails = systemsData?.[campanha.system];
-                return (
-                  <motion.div
-                    key={campanha.id}
-                    className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em]`}
-                    style={
-                      systemDetails
-                        ? {
-                            background: `linear-gradient(0deg, ${systemDetails.bg_from_color} 0%, ${systemDetails.bg_to_color} 100%)`,
-                          }
-                        : {
-                            background: `linear-gradient(0deg, #621333) 0%,  #CF5353 100%)`,
-                          }
-                    }
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}>
-                    <img
-                      src={systemDetails ? systemDetails.image_name : "generico.webp"}
-                      className="w-[15em] h-[8em] object-contain"
-                      alt={campanha.system}
-                    />
-                    <div className="text-2xl font-bold py-[0.5em]">{campanha.name}</div>
-                    <div className="flex flex-col gap-[0.2em] w-full">
-                      <div className="flex justify-between w-full">
-                        <div className="font-bold">ID:</div>
-                        {campanha.id}
-                      </div>
-                      <div className="flex justify-between w-full">
-                        <div className="font-bold">Jogadores:</div>
-                        {campanha.characters.length}
-                      </div>
+              {campanhas
+                .slice()
+                .reverse()
+                .map((campanha) => {
+                  const systemDetails = systemsData?.[campanha.system];
+                  return (
+                    <motion.div
+                      key={campanha.id}
+                      className={`flex text-white rounded-[1.25em] flex-col items-center px-[1.75em] pt-[1.5em] pb-[1.5em]`}
+                      style={
+                        systemDetails
+                          ? {
+                              background: `linear-gradient(0deg, ${systemDetails.bg_from_color} 0%, ${systemDetails.bg_to_color} 100%)`,
+                            }
+                          : {
+                              background: `#CF5353`,
+                            }
+                      }
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}>
+                      <img
+                        src={systemDetails ? systemDetails.image_name : "generico.webp"}
+                        className="w-[15em] h-[8em] object-contain"
+                        alt={campanha.system}
+                      />
+                      <div className="text-2xl font-bold py-[0.5em]">{campanha.name}</div>
+                      <div className="flex flex-col gap-[0.2em] w-full">
+                        <div className="flex justify-between w-full">
+                          <div className="font-bold">ID:</div>
+                          {campanha.id}
+                        </div>
+                        <div className="flex justify-between w-full">
+                          <div className="font-bold">Jogadores:</div>
+                          {campanha.characters.length}
+                        </div>
 
-                      <div className="flex justify-between w-full">
-                        <div className="font-bold">Criação:</div>
-                        {campanha.date}
+                        <div className="flex justify-between w-full">
+                          <div className="font-bold">Criação:</div>
+                          {campanha.date}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-[0.5em]">
-                      <button
-                        className="w-fit font-bold bg-white px-[1.2em] pt-[0.05em] pb-[0.15em] rounded-[0.75em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-300 "
-                        onClick={() => handleSelectCampaign(campanha)}>
-                        Selecionar
-                      </button>
-                      <button
-                        className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-700"
-                        onClick={() => handleCopyUrl(campanha.id.toString())} // Chama a função com o ID da campanha
-                      >
-                        <img className="size-[1.5em]" src="copy.png" alt="Copiar URL" />
-                      </button>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                      <div className="flex gap-[0.5em]">
+                        <button
+                          className="w-fit font-bold bg-white px-[1.2em] pt-[0.05em] pb-[0.15em] rounded-[0.75em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-300 "
+                          onClick={() => handleSelectCampaign(campanha)}>
+                          Selecionar
+                        </button>
+                        <button
+                          className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-700"
+                          onClick={() => handleCopyUrl(campanha.id.toString())} // Chama a função com o ID da campanha
+                        >
+                          <img className="size-[1.5em]" src="copy.png" alt="Copiar URL" />
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
             </AnimatePresence>
           </div>
           <ToastContainer />

@@ -12,7 +12,9 @@ export default function RootLayout({
 }>) {
   return (
     <html>
-      <body className="bg-[url(background.png)] bg-fixed text-gray-900 w-dvw h-dvh overflow-x-hidden">{children}</body>
+      <body className="bg-[url(background.png)] bg-center bg-cover bg-fixed text-gray-900 w-dvw min-h-dvh overflow-x-hidden">
+        {children}
+      </body>
     </html>
   );
 }

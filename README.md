@@ -1,47 +1,103 @@
 ![Logo](public/Banner.png)
 
-Ferramenta para mostrar as fichas de personagens de RPG no OBS
+# 🎲 RPG Overlay para OBS
 
-### Suporte a:
+Uma ferramenta simples para exibir fichas de personagens de **RPGs de mesa** diretamente no **OBS Studio** como **source de navegador**.
 
-- Ordem Paranormal (Normal e com Determinação)
+## Funcionalidades
+
+- Criação e edição de fichas de personagens pela dashboard:
+
+![Logo](public/Campanhas.png)
+
+- Visual personalizável por sistema (cores, foto do personagem, atributos):
+
+![Logo](public/Personagens.png)
+
+- Opção de Overlay da campanha inteira ou personagem individual ( Para todos os sistemas, até customizados)
+
+![Logo](public/OverlayBase.png)
+
+- Layouts personalizados para sistemas ( Atualmente: Ordem Paranormal e Mythic Bastionland):
+
+![Logo](public/Overlay.png)
+![Logo](public/Overlay2.png)
+
+- Possibilidade de adicionar **sistemas customizados**
+
+## Sistemas Suportados
+
+- Ordem Paranormal (com e sem Determinação)
 - Tormenta
+- Dungeons & Dragons
+- Call of Cthulhu
 - Mythic Bastionland
 - Daggerheart
-- Qualquer outro sistema ( Veja seção de sistemas personalizados )
+- Blades in the Dark
+- Cyberpunk RED
+- Customizado (qualquer outro sistema pelo `systems.json`)
 
 ## Como rodar o projeto
 
-É necessario instalar o node.js e npm para rodar o projeto
-
-Após a instalação do node e npm é necessário abrir o terminal e entrar na pasta do projeto
+### 1. Clone ou baixe o repositório
 
 ```bash
-// instalar dependências
-npm i
+git clone https://github.com/Chrb09/ttrpg-obs-overlay.git
+cd ttrpg-obs-overlay
+```
 
-// iniciar servidor
+Ou baixe o ZIP diretamente pelo GitHub.
+
+### 2. Instale as dependências
+
+Certifique-se de ter **Node.js** e **npm** instalados.
+
+```bash
+npm i
+```
+
+### 3. Inicie o servidor
+
+```bash
 npm run dev
 ```
 
-Após isso é só abrir localhost:3000/dashboard no seu navegador para criar e editar as fichas do seu personagem
+### 4. Acesse a Dashboard
 
-Para adicionar o overlay das fichas no seu obs é só clicar no botão de copiar da campanha ( para todos os personagens ) ou de um personagem especifico, depois adicione no source de navegador do OBS e ajuste como quiser
+Abra no navegador:
+[http://localhost:3000/dashboard](http://localhost:3000/dashboard)
 
-## Sistemas Personalizados
+Aqui você poderá criar e editar personagens/campanhas.
 
-Para criar os próprios sistemas você precisa adiciona-lo no arquivo systems.json
+### 5. Adicione ao OBS
+
+- Clique no botão **Copiar Link** (da campanha ou do personagem).
+- No OBS: **Adicionar Fonte → Browser**
+- Cole o link, ajuste largura/altura e posicione como quiser.
+
+## Criando Sistemas Personalizados
+
+Você pode adicionar seus próprios sistemas no arquivo `systems.json` na root do projeto.
+
+### Exemplo:
 
 ```json
 "Nome do Sistema": {
-    "bg_from_color": "corDeBaixo",
-    "bg_to_color": "corDeCima",
-    "image_name": "nomeImagem.png",
-    "stats": [
-      { "name": "Stat com barra", "value": 1, "max": 1, "color": "corBarra" },
-      { "name": "Stat sem barra", "value": 1 },
-      { "name": "Stat String", "value": "Texto" },
-      { "name": "Stat Boolean", "value": false }
-    ]
-  }
+  "bg_from_color": "#123456",
+  "bg_to_color": "#654321",
+  "image_name": "nomeImagem.png",
+  "stats": [
+    { "name": "Stat com barra", "value": 1, "max": 10, "color": "#FF0000" },
+    { "name": "Stat sem barra", "value": 5 },
+    { "name": "Stat String", "value": "Texto Qualquer" },
+    { "name": "Stat Boolean", "value": false }
+  ]
+}
 ```
+
+### Tipos de atributos suportados:
+
+- **Barra** → { "name": "Vida", "value": 10, "max": 20, "color": "#B22222" }
+- **Número simples** → { "name": "Nível", "value": 5 }
+- **Texto** → { "name": "Classe", "value": "Mago" }
+- **Booleano** → { "name": "Fatigado", "value": false }

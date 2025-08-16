@@ -1,18 +1,4 @@
 {
-  "Mythic Bastionland": {
-    "bg_from_color": "#246569",
-    "bg_to_color": "#1E212F",
-    "image_name": "mythic.png",
-    "stats": [
-      { "name": "Clareza", "value": 1, "max": 1, "color": "#D58E2B" },
-      { "name": "Vigor", "value": 1, "max": 1, "color": "#4FAC38" },
-      { "name": "Espirito", "value": 1, "max": 1, "color": "#50C8B4" },
-      { "name": "Guarda", "value": 1, "max": 1, "color": "#666666" },
-      { "name": "Armadura", "value": 1 },
-      { "name": "Gloria", "value": 1 },
-      { "name": "Fatigado", "value": false }
-    ]
-  },
   "Ordem Paranormal": {
     "bg_from_color": "#2C2D88",
     "bg_to_color": "#431A4B",
@@ -52,6 +38,43 @@
       { "name": "Nível", "value": 1 }
     ]
   },
+  "Dungeons & Dragons": {
+    "bg_from_color": "#501409",
+    "bg_to_color": "#C0653A",
+    "image_name": "dnd.png",
+    "stats": [
+      { "name": "Vida", "value": 1, "max": 1, "color": "#B22222" },
+      { "name": "CA", "value": 1 },
+      { "name": "Inspiração", "value": false },
+      { "name": "Nível", "value": 1 },
+      { "name": "Dado de Vida", "value": "1d8" }
+    ]
+  },
+  "Call of Cthulhu": {
+    "bg_from_color": "#0F1C26",
+    "bg_to_color": "#2D927B",
+    "image_name": "cthulhu.png",
+    "stats": [
+      { "name": "Pontos de Vida", "value": 1, "max": 1, "color": "#B22222" },
+      { "name": "Sanidade", "value": 1, "max": 1, "color": "#008080" },
+      { "name": "Sorte", "value": 1, "max": 1, "color": "#FFD700" },
+      { "name": "Magia", "value": 1, "max": 1, "color": "#483D8B" }
+    ]
+  },
+  "Mythic Bastionland": {
+    "bg_from_color": "#246569",
+    "bg_to_color": "#1E212F",
+    "image_name": "mythic.png",
+    "stats": [
+      { "name": "Clareza", "value": 1, "max": 1, "color": "#D58E2B" },
+      { "name": "Vigor", "value": 1, "max": 1, "color": "#4FAC38" },
+      { "name": "Espirito", "value": 1, "max": 1, "color": "#50C8B4" },
+      { "name": "Guarda", "value": 1, "max": 1, "color": "#666666" },
+      { "name": "Armadura", "value": 1 },
+      { "name": "Gloria", "value": 1 },
+      { "name": "Fatigado", "value": false }
+    ]
+  },
   "Daggerheart": {
     "bg_from_color": "#64A398",
     "bg_to_color": "#33408A",
@@ -62,6 +85,28 @@
       { "name": "Esperança", "value": 1, "max": 1, "color": "#D08F16" },
       { "name": "Armadura", "value": 1 },
       { "name": "Evasão", "value": 1 }
+    ]
+  },
+  "Blades in the Dark": {
+    "bg_from_color": "#1B1E27",
+    "bg_to_color": "#303030",
+    "image_name": "blades.png",
+    "stats": [
+      { "name": "Stress", "value": 1, "max": 9, "color": "#25576E" },
+      { "name": "Trauma", "value": 0, "max": 4, "color": "#A52A2A" },
+      { "name": "Nível de Calor", "value": 0, "max": 6, "color": "#FF4500" },
+      { "name": "Moedas", "value": 0, "max": 4, "color": "#FFD700" }
+    ]
+  },
+  "Cyberpunk RED": {
+    "bg_from_color": "#661919",
+    "bg_to_color": "#0F0F0F",
+    "image_name": "cyberpunk.png",
+    "stats": [
+      { "name": "HP", "value": 1, "max": 1, "color": "#B22222" },
+      { "name": "Humanidade", "value": 1, "max": 1, "color": "#FF1493" },
+      { "name": "Armadura", "value": 1, "color": "#696969" },
+      { "name": "CredChips", "value": 1, "color": "#FFD700" }
     ]
   },
   "Customizado": {

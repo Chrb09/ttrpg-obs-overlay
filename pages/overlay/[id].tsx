@@ -134,6 +134,224 @@ function Overlay() {
           })}
         </div>
       );
+    case "Ordem Paranormal":
+      return (
+        <div className="flex flex-row justify-between flex-wrap gap-4">
+          {data.characters.map((character) => {
+            const vidaStat = character.stats.find((stat) => stat.name === "Vida");
+            const sanidadeStat = character.stats.find((stat) => stat.name === "Sanidade");
+            const esforcoStat = character.stats.find((stat) => stat.name === "Esforço");
+            return (
+              <div key={character.id} className="flex gap-[0.2em] relative w-[30em] h-[11em]">
+                <img
+                  src={character.icon}
+                  alt={character.name}
+                  className="size-[7.5em] aspect-square object-cover rounded-full outline-[0.25em] outline-gray-700 z-10 absolute left-[2em] top-[1em]"
+                />
+
+                <div className="absolute left-[2.25em] bottom-[0.5em] bg-gray-800 text-amber-400 size-[2em] flex justify-center items-center rounded-full  font-bold text-[1.4em] z-20 translate-y-[-50%] translate-x-[-50%] text-center [text-shadow:_0px_0px_8px_#FFB900]">
+                  {esforcoStat?.value}
+                </div>
+
+                <div className="flex flex-col gap-[0.2em]  absolute left-[8.7em] top-[1em] w-[20em]">
+                  <div
+                    className="font-bold text-2xl w-full focus:outline-none pl-[1em]"
+                    style={{
+                      color: character.color,
+                    }}>
+                    {character.name}
+                  </div>
+                  <div className="flex flex-col items-center p-[0.25em] rounded-r-[0.75em]  gap-[0.25em] bg-gray-700 w-full">
+                    <div className="relative text-white z-0 w-full">
+                      <motion.div
+                        className={`h-[1.5em] max-w-[100%] rounded-t-[0.5em]`}
+                        style={{
+                          width: `${
+                            typeof vidaStat?.value === "number" && typeof vidaStat?.max === "number"
+                              ? (vidaStat?.value / vidaStat?.max) * 100
+                              : 0
+                          }%`,
+                          backgroundColor: vidaStat?.color,
+                        }}
+                        initial={false}
+                        animate={{
+                          width: `${
+                            typeof vidaStat?.value === "number" && typeof vidaStat?.max === "number"
+                              ? (vidaStat?.value / vidaStat?.max) * 100
+                              : 0
+                          }%`,
+                        }}
+                      />
+
+                      <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] font-bold z-20 [text-shadow:_0px_0px_8px_rgba(255,255,255,0.9)]">
+                        {vidaStat?.value} / {vidaStat?.max}
+                      </div>
+                    </div>
+                    <div className="relative text-white z-0 w-full">
+                      <motion.div
+                        className={`h-[1.5em] max-w-[100%] rounded-b-[0.5em]`}
+                        style={{
+                          width: `${
+                            typeof sanidadeStat?.value === "number" && typeof sanidadeStat?.max === "number"
+                              ? (sanidadeStat?.value / sanidadeStat?.max) * 100
+                              : 0
+                          }%`,
+                          backgroundColor: sanidadeStat?.color,
+                        }}
+                        initial={false}
+                        animate={{
+                          width: `${
+                            typeof sanidadeStat?.value === "number" && typeof sanidadeStat?.max === "number"
+                              ? (sanidadeStat?.value / sanidadeStat?.max) * 100
+                              : 0
+                          }%`,
+                        }}
+                      />
+
+                      <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] font-bold z-20 [text-shadow:_0px_0px_8px_rgba(255,255,255,0.9)]">
+                        {sanidadeStat?.value} / {sanidadeStat?.max}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-center gap-[1em]">
+                    {character.stats.map((stat) => {
+                      if (stat.max === undefined) {
+                        return (
+                          <div key={stat.name} className="flex flex-col items-center">
+                            <div className="w-fit font-bold">{stat.name}</div>
+                            {typeof stat.value !== "boolean" ? (
+                              <div
+                                className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                                style={{ borderColor: character.color }}>
+                                {stat.value}
+                              </div>
+                            ) : (
+                              <div
+                                className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                                style={{ borderColor: character.color }}>
+                                {stat.value ? "Sim" : "Não"}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                  <div>{/* Botão de Salvar removido */}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    case "Ordem Paranormal - Determinação":
+      return (
+        <div className="flex flex-row justify-between flex-wrap gap-4">
+          {data.characters.map((character) => {
+            const vidaStat = character.stats.find((stat) => stat.name === "Vida");
+            const determinacaoStat = character.stats.find((stat) => stat.name === "Determinação");
+            return (
+              <div key={character.id} className="flex gap-[0.2em] relative w-[30em] h-[11em]">
+                <img
+                  src={character.icon}
+                  alt={character.name}
+                  className="size-[7.5em] aspect-square object-cover rounded-full outline-[0.25em] outline-gray-700 z-10 absolute left-[2em] top-[1em]"
+                />
+
+                <div className="flex flex-col gap-[0.2em]  absolute left-[8.7em] top-[1em] w-[20em]">
+                  <div
+                    className="font-bold text-2xl w-full focus:outline-none pl-[1em]"
+                    style={{
+                      color: character.color,
+                    }}>
+                    {character.name}
+                  </div>
+                  <div className="flex flex-col items-center p-[0.25em] rounded-r-[0.75em]  gap-[0.25em] bg-gray-700 w-full">
+                    <div className="relative text-white z-0 w-full">
+                      <motion.div
+                        className={`h-[1.5em] max-w-[100%] rounded-t-[0.5em]`}
+                        style={{
+                          width: `${
+                            typeof vidaStat?.value === "number" && typeof vidaStat?.max === "number"
+                              ? (vidaStat?.value / vidaStat?.max) * 100
+                              : 0
+                          }%`,
+                          backgroundColor: vidaStat?.color,
+                        }}
+                        initial={false}
+                        animate={{
+                          width: `${
+                            typeof vidaStat?.value === "number" && typeof vidaStat?.max === "number"
+                              ? (vidaStat?.value / vidaStat?.max) * 100
+                              : 0
+                          }%`,
+                        }}
+                      />
+
+                      <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] font-bold z-20 [text-shadow:_0px_0px_8px_rgba(255,255,255,0.9)]">
+                        {vidaStat?.value} / {vidaStat?.max}
+                      </div>
+                    </div>
+                    <div className="relative text-white z-0 w-full">
+                      <motion.div
+                        className={`h-[1.5em] max-w-[100%] rounded-b-[0.5em]`}
+                        style={{
+                          width: `${
+                            typeof determinacaoStat?.value === "number" && typeof determinacaoStat?.max === "number"
+                              ? (determinacaoStat?.value / determinacaoStat?.max) * 100
+                              : 0
+                          }%`,
+                          backgroundColor: determinacaoStat?.color,
+                        }}
+                        initial={false}
+                        animate={{
+                          width: `${
+                            typeof determinacaoStat?.value === "number" && typeof determinacaoStat?.max === "number"
+                              ? (determinacaoStat?.value / determinacaoStat?.max) * 100
+                              : 0
+                          }%`,
+                        }}
+                      />
+
+                      <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] font-bold z-20 [text-shadow:_0px_0px_8px_rgba(255,255,255,0.9)]">
+                        {determinacaoStat?.value} / {determinacaoStat?.max}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-center gap-[1em]">
+                    {character.stats.map((stat) => {
+                      if (stat.max === undefined) {
+                        return (
+                          <div key={stat.name} className="flex flex-col items-center">
+                            <div className="w-fit font-bold">{stat.name}</div>
+                            {typeof stat.value !== "boolean" ? (
+                              <div
+                                className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                                style={{ borderColor: character.color }}>
+                                {stat.value}
+                              </div>
+                            ) : (
+                              <div
+                                className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                                style={{ borderColor: character.color }}>
+                                {stat.value ? "Sim" : "Não"}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                  <div>{/* Botão de Salvar removido */}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+
     default:
       return (
         <div className="flex flex-row justify-between flex-wrap gap-4">
@@ -147,15 +365,22 @@ function Overlay() {
                 />
               </div>
               <div className="flex flex-col gap-[0.5em]">
-                <div className="flex flex-col gap-[0.2em]">
-                  <div className="font-bold text-2xl w-full focus:outline-none" style={{ color: character.color }}>
-                    {character.name}
+                <div className="font-bold text-2xl w-full focus:outline-none" style={{ color: character.color }}>
+                  {character.name}
+                </div>
+                <div className="flex gap-[1em]">
+                  <div className="flex flex-col gap-[0.2em]">
+                    {character.stats.map((stat) => {
+                      if (stat.max !== undefined) {
+                        return <div className="w-fit font-bold">{stat.name}</div>;
+                      }
+                      return null;
+                    })}
                   </div>
-                  {character.stats.map((stat) => {
-                    if (stat.max !== undefined) {
-                      return (
-                        <div key={stat.name} className="flex gap-[0.5em] items-center ">
-                          <div className="min-w-[5em] w-fit font-bold">{stat.name}</div>
+                  <div className="flex flex-col gap-[0.2em]">
+                    {character.stats.map((stat) => {
+                      if (stat.max !== undefined) {
+                        return (
                           <div className="flex justify-center relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[18em] px-[1.2em] z-0">
                             <motion.div
                               className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
@@ -181,11 +406,11 @@ function Overlay() {
                               {stat.value} / {stat.max}
                             </div>
                           </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   {character.stats.map((stat) => {
@@ -212,7 +437,6 @@ function Overlay() {
                     return null;
                   })}
                 </div>
-                <div>{/* Botão de Salvar removido */}</div>
               </div>
             </div>
           ))}

@@ -8,20 +8,20 @@ Uma ferramenta simples para exibir fichas de personagens de **RPGs de mesa** dir
 
 - Criação e edição de fichas de personagens pela dashboard:
 
-![Logo](public/Campanhas.png)
+![Campanhas](public/campanhas.png)
 
 - Visual personalizável por sistema (cores, foto do personagem, atributos):
 
-![Logo](public/Personagens.png)
+![Personagens](public/personagens.png)
 
 - Opção de Overlay da campanha inteira ou personagem individual ( Para todos os sistemas, até customizados)
 
-![Logo](public/OverlayBase.png)
+![OverlayBase](public/OverlayBase.png)
 
 - Layouts personalizados para sistemas ( Atualmente: Ordem Paranormal e Mythic Bastionland):
 
-![Logo](public/Overlay.png)
-![Logo](public/Overlay2.png)
+![OverlayOrdem](public/Overlay.png)
+![OverlayMythic](public/Overlay2.png)
 
 - Possibilidade de adicionar **sistemas customizados**
 

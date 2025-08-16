@@ -26,7 +26,7 @@ npm run dev
 
 Após isso é só abrir localhost:3000/dashboard no seu navegador para criar e editar as fichas do seu personagem
 
-Para adicionar o overlay das fichas no seu obs é só clicar no botão de copiar da campanha ( para todos os personagens ) ou de um personagem especifico
+Para adicionar o overlay das fichas no seu obs é só clicar no botão de copiar da campanha ( para todos os personagens ) ou de um personagem especifico, depois adicione no source de navegador do OBS e ajuste como quiser
 
 ## Sistemas Personalizados
 

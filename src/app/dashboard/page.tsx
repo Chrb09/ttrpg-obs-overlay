@@ -78,7 +78,7 @@ export default function Dashboard() {
   if (error || systemsError) return <div>Falha ao carregar as campanhas ou sistemas.</div>;
   if (isLoading || systemsLoading)
     return (
-      <div className="w-full h-full bg-white flex items-center justify-center flex-col">
+      <div className="w-full min-h-dvh bg-white flex items-center justify-center flex-col">
         <svg
           className="text-gray-300 animate-spin"
           viewBox="0 0 64 64"
@@ -105,13 +105,15 @@ export default function Dashboard() {
     );
   if (!campanhas)
     return (
-      <div className="w-full h-full bg-white flex items-center justify-center flex-col">
+      <div className="w-full min-h-dvh bg-white flex items-center justify-center flex-col">
         Nenhuma campanha encontrada.
       </div>
     );
   if (!systemsData)
     return (
-      <div className="w-full h-full bg-white flex items-center justify-center flex-col">Nenhum sistema encontrado.</div>
+      <div className="w-full min-h-dvh bg-white flex items-center justify-center flex-col">
+        Nenhum sistema encontrado.
+      </div>
     );
 
   const handleUpdateCharacter = async (updatedChar: Character) => {

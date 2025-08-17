@@ -97,7 +97,7 @@ function OverlayCharacter() {
                   className="w-[20em] absolute left-[50%] top-[50%] translate-y-[-50%] translate-x-[-50%] select-none"
                 />
                 <div
-                  className={`absolute left-[50%] top-[56.5%] translate-y-[-50%] translate-x-[-50%] text-[1.85em] ${manufacturingConsent.className}`}>
+                  className={`absolute left-[50%] top-[56.85%] translate-y-[-50%] translate-x-[-50%] text-[1.8em] ${manufacturingConsent.className}`}>
                   {character.name}
                 </div>
                 <div className="absolute left-[50%] top-[17%] font-bold text-[1.75em] translate-y-[-50%] translate-x-[-50%] text-center">

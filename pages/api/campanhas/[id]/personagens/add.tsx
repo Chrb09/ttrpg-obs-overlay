@@ -86,6 +86,7 @@ export default async function handler(req: any, res: any) {
       name,
       icon: iconPath,
       color,
+      visible: true,
       stats: baseStats,
     };
 

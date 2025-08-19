@@ -1,17 +1,19 @@
+// Dashboard.tsx
 "use client";
+
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Colorful } from "@uiw/react-color";
 import { AnimatePresence, motion } from "motion/react";
-import React, { useState, useEffect } from "react";
-import { Slide, toast, ToastContainer } from "react-toastify";
 import useSWR, { mutate } from "swr";
+import { Slide, toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
+/** ---------- Types ---------- */
 interface Stat {
   name: string;
-  value: number;
+  value: number | string | boolean;
   max?: number;
-  color: string;
+  color?: string;
 }
 
 interface Character {
@@ -19,6 +21,7 @@ interface Character {
   name: string;
   icon: string;
   color: string;
+  visible?: boolean;
   stats: Stat[];
 }
 
@@ -39,7 +42,18 @@ interface SystemData {
   };
 }
 
+/** ---------- Utils & Hooks ---------- */
+
+// Simple fetcher for SWR
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+function clamp(n: number, min = 0, max = Infinity) {
+  return Math.max(min, Math.min(max, n));
+}
+
+/** ---------- Component ---------- */
 export default function Dashboard() {
+  // Data
   const { data: campanhas, error, isLoading } = useSWR<Campanha[]>("/api/campanhas", fetcher);
   const {
     data: systemsData,
@@ -47,35 +61,245 @@ export default function Dashboard() {
     isLoading: systemsLoading,
   } = useSWR<SystemData>("/api/systems", fetcher);
 
+  // UI state
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
-  // Dentro do seu componente Dashboard
   const [visibleColorPickerId, setVisibleColorPickerId] = useState<number | null>(null);
-  const [tempColor, setTempColor] = useState<string>("#ff0000"); // Estado para a cor temporária
-  // ...
-
+  const [tempColor, setTempColor] = useState<string>("#ff0000");
   const [showAddCampaignForm, setShowAddCampaignForm] = useState(false);
   const [showAddCharacterForm, setShowAddCharacterForm] = useState(false);
+
+  // new campaign/character form states
   const [newCampaignData, setNewCampaignData] = useState({
     name: "",
     system: systemsData ? Object.keys(systemsData)[0] : "Ordem Paranormal",
   });
   const [newCharacterFile, setNewCharacterFile] = useState<File | null>(null);
+  const [newCharacterPreview, setNewCharacterPreview] = useState<string | null>(null);
   const [newCharacterData, setNewCharacterData] = useState({ name: "", color: "#ff0000" });
-  const selectedCampaign = campanhas?.find((c) => c.id === selectedCampaignId) || null;
 
-  // Dentro do seu componente Dashboard, logo abaixo dos `useState`
+  // overlay controls per-campaign (persisted in localStorage so stream PC can reuse)
+  const [campaignSettings, setCampaignSettings] = useState<
+    Record<number, { layout: string; scale: number; safeArea: number; transparent: boolean }>
+  >({});
+
+  // refs & click outside
+  const colorRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  // ephemeral selected campaign object
+  const selectedCampaign = useMemo(
+    () => campanhas?.find((c) => c.id === selectedCampaignId) ?? null,
+    [campanhas, selectedCampaignId]
+  );
+
+  // keep tempColor synced when opening color picker
   useEffect(() => {
     if (visibleColorPickerId !== null) {
-      // Encontre o personagem cujo color picker foi aberto
-      const character = selectedCampaign?.characters.find((c) => c.id === visibleColorPickerId);
-      if (character) {
-        // Sincroniza a cor temporária com a cor original do personagem
-        setTempColor(character.color);
-      }
+      const char = selectedCampaign?.characters.find((c) => c.id === visibleColorPickerId);
+      if (char) setTempColor(char.color);
     }
   }, [visibleColorPickerId, selectedCampaign]);
 
-  if (error || systemsError) return <div>Falha ao carregar as campanhas ou sistemas.</div>;
+  // close modals / color picker on ESC
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShowAddCharacterForm(false);
+        setShowAddCampaignForm(false);
+        setVisibleColorPickerId(null);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
+  /** ---------- Helpers for optimistic update ---------- */
+
+  const updateCharacterOnServer = useCallback(
+    async (campaignId: number, charId: number, charPayload: Partial<Character>) => {
+      // sends patch/put to backend. API must accept partial updates; adapt if not.
+      const res = await fetch(`/api/campanhas/${campaignId}/personagens/${charId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(charPayload),
+      });
+      if (!res.ok) throw new Error("Falha ao atualizar personagem no servidor");
+      return res.json();
+    },
+    []
+  );
+
+  const handleCharacterDataChange = useCallback(
+    async (
+      newValue: any,
+      charId: number,
+      field: "name" | "color" | "visible" | "statValue" | "statMax",
+      statName?: string
+    ) => {
+      if (!campanhas || !selectedCampaignId) return;
+      const key = "/api/campanhas";
+
+      // build optimistic updated campanhas
+      const previous = campanhas;
+      const updatedCampanhas = campanhas.map((campanha) => {
+        if (campanha.id !== selectedCampaignId) return campanha;
+        return {
+          ...campanha,
+          characters: campanha.characters.map((ch) => {
+            if (ch.id !== charId) return ch;
+            let updated = { ...ch };
+            if (field === "statValue" || field === "statMax") {
+              updated = {
+                ...updated,
+                stats: updated.stats.map((s) => {
+                  if (s.name !== statName) return s;
+                  if (field === "statValue") {
+                    const parsed = typeof s.value === "number" ? (newValue === "" ? 0 : parseInt(newValue)) : newValue;
+                    const clamped = typeof parsed === "number" && s.max ? clamp(parsed, 0, s.max) : parsed;
+                    return { ...s, value: clamped };
+                  } else {
+                    const parsedMax = parseInt((newValue as string) || "0");
+                    return { ...s, max: parsedMax };
+                  }
+                }),
+              };
+            } else {
+              // name, color, visible, locked
+              updated = { ...updated, [field]: newValue };
+            }
+            return updated;
+          }),
+        };
+      });
+
+      // optimistic mutate
+      mutate(key, updatedCampanhas, false);
+
+      // determine payload for server (send only character)
+      try {
+        const campanha = updatedCampanhas.find((c) => c.id === selectedCampaignId)!;
+        const char = campanha.characters.find((c) => c.id === charId)!;
+        await updateCharacterOnServer(selectedCampaignId, charId, char);
+        // revalidate to ensure server wins
+        mutate(key);
+      } catch (err) {
+        console.error(err);
+        // rollback
+        mutate(key, previous, false);
+        toast.error("Não foi possível salvar. Alterações revertidas.");
+      }
+    },
+    [campanhas, selectedCampaignId, updateCharacterOnServer]
+  );
+
+  /** ---------- Additional features ---------- */
+
+  // toggle visibility (quick action)
+  const toggleCharacterVisibility = useCallback(
+    (charId: number) => {
+      const char = selectedCampaign?.characters.find((c) => c.id === charId);
+      if (!char) return;
+      handleCharacterDataChange(!char.visible, charId, "visible");
+    },
+    [selectedCampaign, handleCharacterDataChange]
+  );
+
+  // copy overlay URL (with layout/scale settings)
+  const handleCopyUrl = useCallback(
+    async (campaignId: string | number, characterId?: string | number) => {
+      const base = `${window.location.origin}/overlay/${campaignId}${characterId ? `?characterId=${characterId}` : ""}`;
+      try {
+        await navigator.clipboard.writeText(base);
+        toast.success("URL copiada para a área de transferência!", {
+          position: "bottom-right",
+          autoClose: 3000,
+          transition: Slide,
+        });
+      } catch (err) {
+        console.error(err);
+        toast.error("Erro ao copiar a URL.", { position: "bottom-right", autoClose: 3000, transition: Slide });
+      }
+    },
+    [campaignSettings]
+  );
+
+  /** ---------- Add campaign / character ---------- */
+
+  const handleAddCampaign = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const res = await fetch("/api/campanhas/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCampaignData),
+      });
+      if (res.ok) {
+        setShowAddCampaignForm(false);
+        toast.success("Campanha adicionada com sucesso!", {
+          position: "bottom-right",
+          autoClose: 3000,
+          transition: Slide,
+        });
+        setNewCampaignData({ name: "", system: systemsData ? Object.keys(systemsData)[0] : "Ordem Paranormal" });
+        mutate("/api/campanhas");
+      } else {
+        toast.error("Erro ao criar campanha.");
+      }
+    },
+    [newCampaignData, systemsData]
+  );
+
+  // preview selected file
+  useEffect(() => {
+    if (!newCharacterFile) {
+      setNewCharacterPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(newCharacterFile);
+    setNewCharacterPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [newCharacterFile]);
+
+  const handleAddCharacter = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!selectedCampaignId) return;
+
+      const formData = new FormData();
+      formData.append("name", newCharacterData.name);
+      formData.append("color", newCharacterData.color);
+
+      if (newCharacterFile) {
+        formData.append("iconFile", newCharacterFile);
+      }
+
+      const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/add`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        setShowAddCharacterForm(false);
+        setNewCharacterData({ name: "", color: "#ff0000" });
+        setNewCharacterFile(null);
+        setNewCharacterPreview(null);
+        toast.success("Personagem adicionado com sucesso!", { position: "bottom-right", autoClose: 2500 });
+        mutate("/api/campanhas");
+      } else {
+        toast.error("Erro ao adicionar personagem.");
+      }
+    },
+    [selectedCampaignId, newCharacterData, newCharacterFile]
+  );
+
+  /** ---------- JSX ---------- */
+
+  if (error || systemsError)
+    return (
+      <div className="w-full min-h-dvh bg-white flex items-center justify-center flex-col">
+        Falha ao carregar as campanhas ou sistemas.
+      </div>
+    );
   if (isLoading || systemsLoading)
     return (
       <div className="w-full min-h-dvh bg-white flex items-center justify-center flex-col">
@@ -116,172 +340,8 @@ export default function Dashboard() {
       </div>
     );
 
-  const handleUpdateCharacter = async (updatedChar: Character) => {
-    if (!selectedCampaignId) return;
-
-    const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/${updatedChar.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedChar),
-    });
-
-    if (!res.ok) {
-      console.error("Erro ao atualizar o personagem.");
-      mutate("/api/campanhas");
-    }
-  };
-
-  // Dentro do seu componente Dashboard
-  const handleCopyUrl = async (campaignId: string) => {
-    const overlayUrl = `${window.location.origin}/overlay/${campaignId}`;
-
-    try {
-      await navigator.clipboard.writeText(overlayUrl);
-      toast.success("URL copiada para a área de transferência!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
-    } catch (err) {
-      console.error("Falha ao copiar a URL: ", err);
-      toast.error("Erro ao copiar a URL. Por favor, tente novamente.", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
-    }
-  };
-
-  const handleCharacterDataChange = async (
-    newValue: any, // O novo valor (string ou número)
-    charId: number,
-    field: "name" | "color" | "statValue" | "statMax",
-    statName?: string
-  ) => {
-    const campanhaKey = "/api/campanhas";
-    let updatedChar: Character | null = null; // Crie uma variável para o personagem atualizado
-    const updatedCampanhas = campanhas.map((campanha) => {
-      if (campanha.id === selectedCampaignId) {
-        const updatedCharacters = campanha.characters.map((char) => {
-          if (char.id === charId) {
-            if (field === "statValue" || field === "statMax") {
-              // Lógica para stats
-              const updatedStats = char.stats.map((stat) => {
-                if (stat.name === statName) {
-                  let valueToUpdate = newValue;
-                  if (typeof stat.value === "number") {
-                    valueToUpdate = newValue === "" ? 0 : parseInt(newValue);
-                  }
-                  return { ...stat, [field === "statValue" ? "value" : "max"]: valueToUpdate };
-                }
-                return stat;
-              });
-              updatedChar = { ...char, stats: updatedStats };
-            } else {
-              // Lógica para nome e cor
-              updatedChar = { ...char, [field]: newValue };
-            }
-            return updatedChar;
-          }
-          return char;
-        });
-        return { ...campanha, characters: updatedCharacters };
-      }
-      return campanha;
-    });
-
-    // Aguarda a atualização no banco de dados antes de atualizar o cache local
-    if (updatedChar) {
-      await handleUpdateCharacter(updatedChar);
-    }
-
-    mutate(campanhaKey, updatedCampanhas, false);
-  };
-
-  const handleSelectCampaign = (campanha: Campanha) => {
-    setSelectedCampaignId(campanha.id);
-    setShowAddCharacterForm(false);
-  };
-
-  const handleAddCampaign = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const res = await fetch("/api/campanhas/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newCampaignData),
-    });
-
-    if (res.ok) {
-      setShowAddCampaignForm(false);
-      toast.success("Campanha adicionada com sucesso!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
-      setNewCampaignData({ name: "", system: Object.keys(systemsData)[0] });
-      mutate("/api/campanhas");
-    }
-  };
-
-  const handleAddCharacter = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!selectedCampaignId) return;
-
-    const formData = new FormData();
-    formData.append("name", newCharacterData.name);
-    formData.append("color", newCharacterData.color);
-
-    // Anexa o arquivo APENAS se o usuário tiver selecionado um
-    if (newCharacterFile) {
-      formData.append("iconFile", newCharacterFile);
-    }
-
-    const res = await fetch(`/api/campanhas/${selectedCampaignId}/personagens/add`, {
-      method: "POST",
-      body: formData, // Envia o FormData em vez de JSON.stringify
-    });
-
-    if (res.ok) {
-      setShowAddCharacterForm(false);
-      toast.success("Personagem adicionado com sucesso!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
-      setNewCharacterData({ name: "", color: "#ff0000" });
-      setNewCharacterFile(null); // Limpa o estado do arquivo
-      mutate("/api/campanhas");
-    } else {
-      console.error("Erro ao adicionar personagem.");
-    }
-  };
-
   return (
-    <div className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[3.5em] max-md:!px-[2em]">
+    <div ref={wrapperRef} className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[3.5em] max-md:!px-[2em]">
       <div className="flex justify-between items-center pb-[1.5em]  max-md:flex-col-reverse">
         <div
           className="text-2xl font-bold text-rose-700 pb-[0.5em] cursor-pointer flex gap-[0.35em]"
@@ -319,7 +379,9 @@ export default function Dashboard() {
               Voltar
             </button>
           </div>
+
           <div className="text font-medium pb-[0.5em]">Escolha o personagem:</div>
+
           <div className="flex gap-4 max-xs:justify-center">
             <div className="grid grid-cols-3 max-xs:grid-cols-1 max-2xl:grid-cols-2 gap-[2em] max-xl:text-[0.9em]">
               {selectedCampaign?.characters.length === 0 && (
@@ -334,7 +396,7 @@ export default function Dashboard() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}>
-                    <div className="flex flex-col items-center gap-[0.5em] w-[9.5em] px-[1em] relative">
+                    <div className="flex flex-col items-center w-[9.5em] px-[1em] relative">
                       <img
                         src={personagem.icon}
                         alt={personagem.name}
@@ -346,27 +408,43 @@ export default function Dashboard() {
                         type="text"
                         value={personagem.name}
                         onChange={(e) => handleCharacterDataChange(e.target.value, personagem.id, "name")}
+                        aria-label={`Nome ${personagem.name}`}
                       />
 
-                      <button
-                        className=" font-bold  flex items-center justify-center rounded-full size-[1.80em] absolute cursor-pointer bottom-[2.5em] left-[1em] transition-all duration-200 bg-gray-700 hover:bg-gray-800 hover:size-[2.10em]"
-                        onClick={() => handleCopyUrl(`${selectedCampaign.id}/${personagem.id}`)} // Chama a função com o ID da campanha
-                      >
-                        <img src="copy.png" alt="Copiar URL" className="size-[1em] object-cover" draggable={false} />
-                      </button>
+                      <div className="absolute left-[0] bottom-[2.5em] flex flex-col justify-between gap-[0.2em]">
+                        <button
+                          title="Copiar URL deste personagem"
+                          className="font-bold  flex items-center justify-center rounded-full size-[1.80em] cursor-pointer  transition-all duration-200 bg-gray-700 hover:bg-gray-800 hover:size-[2.10em]"
+                          onClick={() => handleCopyUrl(selectedCampaign!.id, personagem.id)}>
+                          <img src="copy.png" alt="Copiar URL" className="size-[1em] object-cover" draggable={false} />
+                        </button>
 
-                      <div
-                        className="rounded-full size-[1.80em] absolute bottom-[2.5em] right-[1em] transition-all duration-200 cursor-pointer z-0 border-[0.15em] hover:size-[2.10em]"
-                        style={{ backgroundColor: personagem.color }}
-                        onClick={() => {
-                          setVisibleColorPickerId(personagem.id);
-                        }}
-                      />
+                        <button
+                          title={personagem.visible ? "Esconder no overlay" : "Mostrar no overlay"}
+                          className="font-bold  flex items-center justify-center rounded-full size-[1.80em] cursor-pointer transition-all duration-200 bg-gray-700 hover:bg-gray-800 hover:size-[2.10em]"
+                          onClick={() => toggleCharacterVisibility(personagem.id)}>
+                          <img
+                            src={`${personagem.visible ? "show" : "hide"}.png`}
+                            alt="Tornar Visível"
+                            className="size-[1em] object-cover"
+                            draggable={false}
+                          />
+                        </button>
+
+                        <div
+                          title="Alterar cor do personagem"
+                          ref={personagem.id === visibleColorPickerId ? colorRef : null}
+                          className="rounded-full size-[1.80em]transition-all duration-200 cursor-pointer size-[1.80em] z-0 border-[0.15em] hover:size-[2.10em]"
+                          style={{ backgroundColor: personagem.color }}
+                          onClick={() => {
+                            setVisibleColorPickerId(personagem.id);
+                          }}
+                        />
+                      </div>
                       <AnimatePresence>
                         {visibleColorPickerId === personagem.id && (
                           <motion.div
                             className="absolute z-0 right-[1em] bottom-[-1em]"
-                            onClick={(e) => e.stopPropagation()}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -395,129 +473,150 @@ export default function Dashboard() {
                         )}
                       </AnimatePresence>
                     </div>
+
                     <div className="flex flex-col gap-[0.5em]">
                       <div className="flex gap-[0.5em] relative max-xs:justify-center">
                         <div className="flex flex-col gap-[0.5em] max-sm:absolute max-sm:gap-[1.65em] max-sm:left-[50%] max-sm:translate-x-[-50%] max-sm:text-center max-sm:items-center">
-                          {personagem.stats.map((stat) => {
-                            if (stat.max !== undefined) {
-                              return (
-                                <div key={stat.name} className="w-fit font-bold max-lg:min-w-fit">
-                                  {stat.name}
-                                </div>
-                              );
-                            }
-                            return null;
-                          })}
+                          {personagem.stats.map((stat) =>
+                            stat.max !== undefined ? (
+                              <div key={stat.name} className="w-fit font-bold max-lg:min-w-fit">
+                                {stat.name}
+                              </div>
+                            ) : null
+                          )}
                         </div>
+
                         <div className="flex flex-col gap-[0.5em] max-sm:gap-[1.55em] max-sm:pt-[1.55em]">
-                          {personagem.stats.map((stat) => {
-                            if (stat.max !== undefined) {
-                              return (
-                                <div
-                                  key={stat.name}
-                                  className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
-                                  <motion.div
-                                    className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
-                                    style={{
-                                      width: `${(stat.value / stat.max) * 100}%`,
-                                      backgroundColor: stat.color,
-                                    }}
-                                    initial={false}
-                                    animate={{ width: `${(stat.value / stat.max) * 100}%` }}
+                          {personagem.stats.map((stat) =>
+                            stat.max !== undefined ? (
+                              <div
+                                key={stat.name}
+                                className="flex justify-between relative text-white bg-[#555555a2] rounded-[0.6em] py-[0.05em] w-[15em] px-[1.2em] z-0">
+                                <motion.div
+                                  className={`absolute rounded-[0.6em] h-full size-1.5 left-0 top-0 z-10 max-w-[100%]`}
+                                  style={{
+                                    width: `${(Number(stat.value) / Number(stat.max || 1)) * 100}%`,
+                                    backgroundColor: stat.color || personagem.color,
+                                  }}
+                                  initial={false}
+                                  animate={{ width: `${(Number(stat.value) / Number(stat.max || 1)) * 100}%` }}
+                                />
+                                <button
+                                  type="button"
+                                  className="z-20 cursor-pointer"
+                                  onClick={() =>
+                                    handleCharacterDataChange(
+                                      Number(stat.value) - 1,
+                                      personagem.id,
+                                      "statValue",
+                                      stat.name
+                                    )
+                                  }>
+                                  <img
+                                    src="arrow.png"
+                                    className="size-[0.75em] object-contain"
+                                    alt="Diminuir"
+                                    draggable={false}
                                   />
-                                  <button
-                                    type="button"
-                                    className="z-20 cursor-pointer"
-                                    onClick={() =>
-                                      handleCharacterDataChange(stat.value - 1, personagem.id, "statValue", stat.name)
-                                    }>
-                                    <img
-                                      src="arrow.png"
-                                      className="size-[0.75em] object-contain"
-                                      alt="Aumentar"
-                                      draggable={false}
-                                    />
-                                  </button>
-                                  <div className="flex font-semibold z-20">
-                                    <input
-                                      className="w-[3ch] text-center focus:outline-none bg-transparent"
-                                      type="number"
-                                      value={stat.value}
-                                      onChange={(e) =>
-                                        handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
-                                      }
-                                    />
-                                    /
-                                    <input
-                                      className="w-[3ch] text-center focus:outline-none bg-transparent"
-                                      type="number"
-                                      value={stat.max}
-                                      onChange={(e) =>
-                                        handleCharacterDataChange(e.target.value, personagem.id, "statMax", stat.name)
-                                      }
-                                    />
-                                  </div>
-                                  <button
-                                    type="button"
-                                    className="z-20 cursor-pointer"
-                                    onClick={() =>
-                                      handleCharacterDataChange(stat.value + 1, personagem.id, "statValue", stat.name)
-                                    }>
-                                    <img
-                                      src="arrow.png"
-                                      className="size-[0.75em] object-contain rotate-180"
-                                      alt="Aumentar"
-                                      draggable={false}
-                                    />
-                                  </button>
+                                </button>
+
+                                <div className="flex font-semibold z-20">
+                                  <input
+                                    className="w-[3ch] text-center focus:outline-none bg-transparent"
+                                    type="number"
+                                    value={stat.value as number}
+                                    onChange={(e) =>
+                                      handleCharacterDataChange(
+                                        e.target.value === "" ? 0 : parseInt(e.target.value),
+                                        personagem.id,
+                                        "statValue",
+                                        stat.name
+                                      )
+                                    }
+                                  />
+                                  /
+                                  <input
+                                    className="w-[3ch] text-center focus:outline-none bg-transparent"
+                                    type="number"
+                                    value={stat.max}
+                                    onChange={(e) =>
+                                      handleCharacterDataChange(
+                                        parseInt(e.target.value || "0"),
+                                        personagem.id,
+                                        "statMax",
+                                        stat.name
+                                      )
+                                    }
+                                  />
                                 </div>
-                              );
-                            }
-                            return null;
-                          })}
+
+                                <button
+                                  type="button"
+                                  className="z-20 cursor-pointer"
+                                  onClick={() =>
+                                    handleCharacterDataChange(
+                                      Number(stat.value) + 1,
+                                      personagem.id,
+                                      "statValue",
+                                      stat.name
+                                    )
+                                  }>
+                                  <img
+                                    src="arrow.png"
+                                    className="size-[0.75em] object-contain rotate-180"
+                                    alt="Aumentar"
+                                    draggable={false}
+                                  />
+                                </button>
+                              </div>
+                            ) : null
+                          )}
                         </div>
                       </div>
+
                       <div className="flex gap-x-[0.9em] flex-wrap">
-                        {personagem.stats.map((stat) => {
-                          if (stat.max === undefined) {
-                            return (
-                              <div key={stat.name} className="flex gap-[0.5em] items-center">
-                                <div className="w-fit font-bold">{stat.name}</div>
-                                {typeof stat.value === "number" && (
-                                  <input
-                                    className="w-[3ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
-                                    type="number"
-                                    value={stat.value}
-                                    onChange={(e) =>
-                                      handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
-                                    }
-                                  />
-                                )}
-                                {typeof stat.value === "string" && (
-                                  <input
-                                    className="w-[10ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
-                                    type="text"
-                                    value={stat.value}
-                                    onChange={(e) =>
-                                      handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
-                                    }
-                                  />
-                                )}
-                                {typeof stat.value === "boolean" && (
-                                  <input
-                                    className="size-[1em] cursor-pointer"
-                                    type="checkbox"
-                                    checked={stat.value}
-                                    onChange={(e) =>
-                                      handleCharacterDataChange(e.target.checked, personagem.id, "statValue", stat.name)
-                                    }
-                                  />
-                                )}
-                              </div>
-                            );
-                          }
-                          return null;
-                        })}
+                        {personagem.stats.map((stat) =>
+                          stat.max === undefined ? (
+                            <div key={stat.name} className="flex gap-[0.5em] items-center">
+                              <div className="w-fit font-bold">{stat.name}</div>
+                              {typeof stat.value === "number" && (
+                                <input
+                                  className="w-[3ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
+                                  type="number"
+                                  value={stat.value as number}
+                                  onChange={(e) =>
+                                    handleCharacterDataChange(
+                                      e.target.value === "" ? 0 : parseInt(e.target.value),
+                                      personagem.id,
+                                      "statValue",
+                                      stat.name
+                                    )
+                                  }
+                                />
+                              )}
+                              {typeof stat.value === "string" && (
+                                <input
+                                  className="w-[10ch] text-center font-bold text-gray-600 border-b-2 border-rose-700 focus:outline-none"
+                                  type="text"
+                                  value={String(stat.value)}
+                                  onChange={(e) =>
+                                    handleCharacterDataChange(e.target.value, personagem.id, "statValue", stat.name)
+                                  }
+                                />
+                              )}
+                              {typeof stat.value === "boolean" && (
+                                <input
+                                  className="size-[1em] cursor-pointer"
+                                  type="checkbox"
+                                  checked={Boolean(stat.value)}
+                                  onChange={(e) =>
+                                    handleCharacterDataChange(e.target.checked, personagem.id, "statValue", stat.name)
+                                  }
+                                />
+                              )}
+                            </div>
+                          ) : null
+                        )}
                       </div>
                     </div>
                   </motion.div>
@@ -527,6 +626,7 @@ export default function Dashboard() {
           </div>
         </div>
       ) : (
+        // Campaign list view
         <div className="flex flex-col flex-wrap gap-[1em]">
           <button
             className="w-fit font-semibold bg-rose-700 px-[1em] pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
@@ -551,9 +651,7 @@ export default function Dashboard() {
                           ? {
                               background: `linear-gradient(0deg, ${systemDetails.bg_from_color} 0%, ${systemDetails.bg_to_color} 100%)`,
                             }
-                          : {
-                              background: `#CF5353`,
-                            }
+                          : { background: `#CF5353` }
                       }
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -583,13 +681,16 @@ export default function Dashboard() {
                       <div className="flex gap-[0.5em]">
                         <button
                           className="w-fit font-bold bg-white px-[1.2em] pt-[0.05em] pb-[0.15em] rounded-[0.75em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-300 "
-                          onClick={() => handleSelectCampaign(campanha)}>
+                          onClick={() => setSelectedCampaignId(campanha.id)}>
                           Selecionar
                         </button>
+
                         <button
+                          title="Copiar URL da campanha"
                           className="w-fit font-bold border-2 border-white p-[0.2em] rounded-[0.5em] text-[#1E212F] cursor-pointer mt-4 transition-all duration-200 hover:bg-gray-700"
-                          onClick={() => handleCopyUrl(campanha.id.toString())} // Chama a função com o ID da campanha
-                        >
+                          onClick={() => {
+                            handleCopyUrl(campanha.id);
+                          }}>
                           <img className="size-[1.5em]" src="copy.png" alt="Copiar URL" />
                         </button>
                       </div>
@@ -611,9 +712,14 @@ export default function Dashboard() {
             transition={{ duration: 0.2 }}
             className="absolute top-0 left-0 z-50 w-full h-full bg-[#4608097e]">
             <form
-              className="absolute top-[50%] left-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] z-60 flex flex-col gap-[1em] bg-white justify-center px-[1.5em] py-[2em] rounded-[1.5em]"
+              className="absolute top-[50%] left-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] z-60 flex flex-col gap-[1em] bg-white justify-center items-center px-[1.5em] py-[2em] rounded-[1.5em]"
               onSubmit={handleAddCharacter}>
-              <div className="flex flex-col gap-[0.2em]">
+              {newCharacterPreview ? (
+                <img src={newCharacterPreview} className="size-[8em] object-cover rounded-full" alt="preview" />
+              ) : (
+                <img src="default-icon.png" className="size-[8em] object-cover rounded-full" alt="preview" />
+              )}
+              <div className="flex flex-col gap-[0.2em] w-full">
                 Nome do personagem
                 <input
                   className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
@@ -624,19 +730,16 @@ export default function Dashboard() {
                   required
                 />
               </div>
-              <div className="flex flex-col gap-[0.2em]">
+              <div className="flex flex-col gap-[0.2em] w-full">
                 Foto do personagem
                 <input
                   className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em]"
                   type="file"
-                  onChange={(e) => {
-                    if (e.target.files) {
-                      setNewCharacterFile(e.target.files[0]);
-                    }
-                  }}
+                  accept="image/*"
+                  onChange={(e) => e.target.files && setNewCharacterFile(e.target.files[0])}
                 />
               </div>
-              <div className="flex flex-col gap-[0.2em] items-center">
+              <div className="flex flex-col gap-[0.2em] items-center w-full">
                 Cor do personagem
                 <Colorful
                   color={newCharacterData.color}
@@ -644,7 +747,7 @@ export default function Dashboard() {
                   disableAlpha={true}
                 />
               </div>
-              <div className="flex justify-between gap-[0.75em]">
+              <div className="flex justify-between gap-[0.75em] w-full">
                 <button
                   className="w-full font-semibold bg-rose-700 px-[1em] text-lg  pt-[0.15em] pb-[0.35em] rounded-[0.75em] text-white cursor-pointer  transition-all duration-200 hover:bg-rose-800 hover:translate-y-[-0.1em]"
                   type="submit">
@@ -688,7 +791,7 @@ export default function Dashboard() {
                 Sistema
                 <select
                   className="w-full border-rose-700 border-[0.15em] py-[0.35em] px-[0.5em] rounded-[0.85em] cursor-pointer"
-                  value={newCampaignData.system} // Corrigido para `newCampaignData.system`
+                  value={newCampaignData.system}
                   onChange={(e) => setNewCampaignData({ ...newCampaignData, system: e.target.value })}
                   required>
                   {Object.keys(systemsData).map((s) => (

@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import useSWR, { mutate } from "swr";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { infinite } from "swr/infinite";
 
 /** ---------- Types ---------- */
 interface Stat {
@@ -47,7 +48,7 @@ interface SystemData {
 // Simple fetcher for SWR
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-function clamp(n: number, min = 0, max = Infinity) {
+function clamp(n: number, min = -Infinity, max = Infinity) {
   return Math.max(min, Math.min(max, n));
 }
 
@@ -155,7 +156,7 @@ export default function Dashboard() {
                   if (s.name !== statName) return s;
                   if (field === "statValue") {
                     const parsed = typeof s.value === "number" ? (newValue === "" ? 0 : parseInt(newValue)) : newValue;
-                    const clamped = typeof parsed === "number" && s.max ? clamp(parsed, 0, s.max) : parsed;
+                    const clamped = typeof parsed === "number" && s.max ? clamp(parsed, -Infinity, s.max) : parsed;
                     return { ...s, value: clamped };
                   } else {
                     const parsedMax = parseInt((newValue as string) || "0");

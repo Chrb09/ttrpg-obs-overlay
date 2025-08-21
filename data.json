@@ -1,1 +1,1016 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "19 furries",
+    "system": "Tormenta",
+    "date": "12/04/2025",
+    "characters": [
+      {
+        "id": 1,
+        "name": "Selene Nocturnya",
+        "icon": "/uploads/1/1.png",
+        "color": "#9464cd",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 2,
+        "name": "Justine Fontenele",
+        "icon": "/uploads/1/2.png",
+        "color": "#f65a92",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 3,
+        "name": "Heros Xenakis",
+        "icon": "/uploads/1/3.png",
+        "color": "#cfcfcf",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 4,
+        "name": "Kraggith e seus 19 irmãos",
+        "icon": "/uploads/1/4.png",
+        "color": "#55b966",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 5,
+        "name": "Reptor",
+        "icon": "/uploads/1/5.png",
+        "color": "#d98757",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Mana",
+            "value": 1,
+            "max": 1,
+            "color": "#1D62E4"
+          },
+          {
+            "name": "Defesa",
+            "value": 1
+          },
+          {
+            "name": "CD",
+            "value": 1
+          },
+          {
+            "name": "Nível",
+            "value": 1
+          }
+        ],
+        "visible": true
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Cavaleiros",
+    "system": "Mythic Bastionland",
+    "date": "27/06/2025",
+    "characters": [
+      {
+        "id": 1,
+        "name": "Seraphine",
+        "icon": "/uploads/2/1.png",
+        "color": "#ffa400",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 1,
+            "max": 1,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 1,
+            "max": 1,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 1,
+            "max": 1,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 1,
+            "max": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Gloria",
+            "value": 1
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 2,
+        "name": "Osíris",
+        "icon": "/uploads/2/2.png",
+        "color": "#ffcb00",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 1,
+            "max": 1,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 1,
+            "max": 1,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 1,
+            "max": 1,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 1,
+            "max": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Gloria",
+            "value": 1
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 3,
+        "name": "Zarya",
+        "icon": "/uploads/2/3.png",
+        "color": "#ee2d9c",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 1,
+            "max": 1,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 1,
+            "max": 1,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 1,
+            "max": 1,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 1,
+            "max": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Gloria",
+            "value": 1
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 4,
+        "name": "Gris",
+        "icon": "/uploads/2/4.jpg",
+        "color": "#e5644a",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 1,
+            "max": 1,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 1,
+            "max": 1,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 1,
+            "max": 1,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 1,
+            "max": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Gloria",
+            "value": 1
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 5,
+        "name": "Edmund",
+        "icon": "/uploads/2/5.png",
+        "color": "#b2b2b2",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 1,
+            "max": 1,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 1,
+            "max": 1,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 1,
+            "max": 1,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 1,
+            "max": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Gloria",
+            "value": 1
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 6,
+        "name": "Star",
+        "icon": "/uploads/2/6.png",
+        "color": "#00beff",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 1,
+            "max": 1,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 1,
+            "max": 1,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 1,
+            "max": 1,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 1,
+            "max": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Gloria",
+            "value": 1
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Superimposed",
+    "system": "Ordem Paranormal",
+    "date": "03/08/2025",
+    "characters": [
+      {
+        "id": 1,
+        "name": "Summer Amarok ",
+        "icon": "/uploads/3/1.png",
+        "color": "#c13135",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 22,
+            "max": 22,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 30,
+            "max": 30,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 21,
+            "max": 21,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 10
+          },
+          {
+            "name": "Bloqueio",
+            "value": 0
+          },
+          {
+            "name": "Esquiva",
+            "value": 10
+          },
+          {
+            "name": "Nível",
+            "value": 3
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 2,
+        "name": "Eidaka",
+        "icon": "/uploads/3/2.png",
+        "color": "#b7b7b7",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 55,
+            "max": 55,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 21,
+            "max": 21,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 16,
+            "max": 16,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 11
+          },
+          {
+            "name": "Bloqueio",
+            "value": 10
+          },
+          {
+            "name": "Esquiva",
+            "value": 6
+          },
+          {
+            "name": "Nível",
+            "value": 4
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 3,
+        "name": "Alfred Edvard",
+        "icon": "/uploads/3/3.png",
+        "color": "#bababa",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 22,
+            "max": 22,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 30,
+            "max": 30,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 21,
+            "max": 21,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 12
+          },
+          {
+            "name": "Bloqueio",
+            "value": 0
+          },
+          {
+            "name": "Esquiva",
+            "value": 17
+          },
+          {
+            "name": "Nível",
+            "value": 3
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 4,
+        "name": "Jasper Fujiwara",
+        "icon": "/uploads/3/4.png",
+        "color": "#f4a343",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 28,
+            "max": 28,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 20,
+            "max": 20,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 15,
+            "max": 15,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 13
+          },
+          {
+            "name": "Bloqueio",
+            "value": 0
+          },
+          {
+            "name": "Esquiva",
+            "value": 18
+          },
+          {
+            "name": "Nível",
+            "value": 3
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 5,
+        "name": "Hito Hidetaka",
+        "icon": "/uploads/3/5.png",
+        "color": "#4b9051",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 28,
+            "max": 28,
+            "color": "#B22222"
+          },
+          {
+            "name": "Sanidade",
+            "value": 24,
+            "max": 24,
+            "color": "#8A2BE2"
+          },
+          {
+            "name": "Esforço",
+            "value": 12,
+            "max": 12,
+            "color": "#FF8811"
+          },
+          {
+            "name": "Defesa",
+            "value": 14
+          },
+          {
+            "name": "Bloqueio",
+            "value": 0
+          },
+          {
+            "name": "Esquiva",
+            "value": 19
+          },
+          {
+            "name": "Nível",
+            "value": 3
+          }
+        ],
+        "visible": true
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Angelical",
+    "system": "Mythic Bastionland",
+    "date": "09/08/2025",
+    "characters": [
+      {
+        "id": 1,
+        "name": "Elliot",
+        "icon": "/uploads/4/1.jpg",
+        "color": "#4c78d5",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 11,
+            "max": 11,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 10,
+            "max": 10,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 0,
+            "max": 11,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 4,
+            "max": 4,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 3,
+            "color": "#666666"
+          },
+          {
+            "name": "Gloria",
+            "value": 0
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 2,
+        "name": "Stella",
+        "icon": "/uploads/4/2.jpg",
+        "color": "#87837F",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 6,
+            "max": 6,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 10,
+            "max": 11,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 9,
+            "max": 9,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 6,
+            "max": 6,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Gloria",
+            "value": 0
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 3,
+        "name": "Jaime",
+        "icon": "/uploads/4/3.png",
+        "color": "#BF8C6A",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 13,
+            "max": 13,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 7,
+            "max": 14,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 11,
+            "max": 11,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 3,
+            "max": 3,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Gloria",
+            "value": 0
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 4,
+        "name": "Moss Dinn",
+        "icon": "/uploads/4/4.png",
+        "color": "#E35C24",
+        "stats": [
+          {
+            "name": "Clareza",
+            "value": 8,
+            "max": 8,
+            "color": "#D58E2B"
+          },
+          {
+            "name": "Vigor",
+            "value": 14,
+            "max": 14,
+            "color": "#4FAC38"
+          },
+          {
+            "name": "Espirito",
+            "value": 4,
+            "max": 4,
+            "color": "#50C8B4"
+          },
+          {
+            "name": "Guarda",
+            "value": 4,
+            "max": 4,
+            "color": "#666666"
+          },
+          {
+            "name": "Armadura",
+            "value": 1,
+            "color": "#666666"
+          },
+          {
+            "name": "Gloria",
+            "value": 0
+          },
+          {
+            "name": "Fatigado",
+            "value": false
+          }
+        ],
+        "visible": true
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Coração de oceano",
+    "system": "Daggerheart",
+    "date": "00/00/2025",
+    "characters": [
+      {
+        "id": 1,
+        "name": "Ni",
+        "icon": "/uploads/5/1.png",
+        "color": "#976ae3",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Estresse",
+            "value": 1,
+            "max": 1,
+            "color": "#25576E"
+          },
+          {
+            "name": "Esperança",
+            "value": 1,
+            "max": 1,
+            "color": "#D08F16"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Evasão",
+            "value": 1
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 2,
+        "name": "Sak",
+        "icon": "/uploads/5/2.png",
+        "color": "#b0dfe7",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Estresse",
+            "value": 1,
+            "max": 1,
+            "color": "#25576E"
+          },
+          {
+            "name": "Esperança",
+            "value": 1,
+            "max": 1,
+            "color": "#D08F16"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Evasão",
+            "value": 1
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 3,
+        "name": "Luis",
+        "icon": "/uploads/5/3.png",
+        "color": "#4fe68c",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Estresse",
+            "value": 1,
+            "max": 1,
+            "color": "#25576E"
+          },
+          {
+            "name": "Esperança",
+            "value": 1,
+            "max": 1,
+            "color": "#D08F16"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Evasão",
+            "value": 1
+          }
+        ],
+        "visible": true
+      },
+      {
+        "id": 4,
+        "name": "Axeronthia Atropos ",
+        "icon": "/uploads/5/4.png",
+        "color": "#feb951",
+        "stats": [
+          {
+            "name": "Vida",
+            "value": 1,
+            "max": 1,
+            "color": "#B22222"
+          },
+          {
+            "name": "Estresse",
+            "value": 1,
+            "max": 1,
+            "color": "#25576E"
+          },
+          {
+            "name": "Esperança",
+            "value": 1,
+            "max": 1,
+            "color": "#D08F16"
+          },
+          {
+            "name": "Armadura",
+            "value": 1
+          },
+          {
+            "name": "Evasão",
+            "value": 1
+          }
+        ],
+        "visible": true
+      }
+    ]
+  }
+]

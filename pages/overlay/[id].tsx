@@ -218,6 +218,9 @@ export default function Overlay() {
                   src={character.icon}
                   alt={character.name}
                   className="size-[7.5em] aspect-square object-cover rounded-full outline-[0.25em] outline-gray-700 z-10 absolute left-[2em] top-[1em]"
+                  style={{
+                    backgroundColor: character.color,
+                  }}
                 />
 
                 <div className="absolute left-[2.25em] bottom-[0.5em] bg-gray-800 text-amber-400 size-[2em] flex justify-center items-center rounded-full  font-bold text-[1.4em] z-20 translate-y-[-50%] translate-x-[-50%] text-center [text-shadow:_0px_0px_8px_#FFB900]">
@@ -231,7 +234,11 @@ export default function Overlay() {
                     {character.name}
                   </div>
 
-                  <div className="flex flex-col items-center p-[0.25em] rounded-r-[0.75em]  gap-[0.25em] bg-gray-700 w-full">
+                  <div
+                    className="flex flex-col items-center p-[0.25em] rounded-r-[0.75em]  gap-[0.25em] bg-gray-700 w-full"
+                    style={{
+                      boxShadow: `0 0 8px ${character.color}`,
+                    }}>
                     <div className="relative text-white z-0 w-full">
                       <motion.div
                         className={`h-[1.5em] max-w-[100%] rounded-t-[0.5em]`}
@@ -290,16 +297,16 @@ export default function Overlay() {
                       if (stat.max === undefined) {
                         return (
                           <div key={stat.name} className="flex flex-col items-center">
-                            <div className="w-fit font-bold">{stat.name}</div>
+                            <div className="w-fit font-extrabold">{stat.name}</div>
                             {typeof stat.value !== "boolean" ? (
                               <div
-                                className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                                className={`min-w-[3ch] text-center font-bold border-b-2 `}
                                 style={{ borderColor: character.color }}>
                                 {stat.value}
                               </div>
                             ) : (
                               <div
-                                className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                                className={`min-w-[3ch] text-center font-bold border-b-2 `}
                                 style={{ borderColor: character.color }}>
                                 {stat.value ? "Sim" : "Não"}
                               </div>
@@ -329,6 +336,9 @@ export default function Overlay() {
                   src={character.icon}
                   alt={character.name}
                   className="size-[7.5em] aspect-square object-cover rounded-full outline-[0.25em] outline-gray-700 z-10 absolute left-[2em] top-[1em]"
+                  style={{
+                    backgroundColor: character.color,
+                  }}
                 />
 
                 <div className="flex flex-col gap-[0.2em]  absolute left-[8.7em] top-[1em] w-[20em]">
@@ -338,7 +348,11 @@ export default function Overlay() {
                     {character.name}
                   </div>
 
-                  <div className="flex flex-col items-center p-[0.25em] rounded-r-[0.75em]  gap-[0.25em] bg-gray-700 w-full">
+                  <div
+                    className="flex flex-col items-center p-[0.25em] rounded-r-[0.75em]  gap-[0.25em] bg-gray-700 w-full"
+                    style={{
+                      boxShadow: `0 0 8px ${character.color}`,
+                    }}>
                     <div className="relative text-white z-0 w-full">
                       <motion.div
                         className={`h-[1.5em] max-w-[100%] rounded-t-[0.5em]`}
@@ -397,16 +411,16 @@ export default function Overlay() {
                       if (stat.max === undefined) {
                         return (
                           <div key={stat.name} className="flex flex-col items-center">
-                            <div className="w-fit font-bold">{stat.name}</div>
+                            <div className="w-fit font-extrabold">{stat.name}</div>
                             {typeof stat.value !== "boolean" ? (
                               <div
-                                className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                                className={`min-w-[3ch] text-center font-bold border-b-2 `}
                                 style={{ borderColor: character.color }}>
                                 {stat.value}
                               </div>
                             ) : (
                               <div
-                                className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
+                                className={`min-w-[3ch] text-center font-bold border-b-2 `}
                                 style={{ borderColor: character.color }}>
                                 {stat.value ? "Sim" : "Não"}
                               </div>

@@ -10,7 +10,7 @@
       { "name": "Defesa", "value": 1 },
       { "name": "Bloqueio", "value": 1 },
       { "name": "Esquiva", "value": 1 },
-      { "name": "Nível", "value": 1 }
+      { "name": "Nível/NEX", "value": "0%" }
     ]
   },
   "Ordem Paranormal - Determinação": {
@@ -23,7 +23,7 @@
       { "name": "Defesa", "value": 1 },
       { "name": "Bloqueio", "value": 1 },
       { "name": "Esquiva", "value": 1 },
-      { "name": "Nível", "value": 1 }
+      { "name": "Nível/NEX", "value": "0%" }
     ]
   },
   "Tormenta": {

@@ -10,6 +10,20 @@ export const config = {
   },
 };
 
+async function moveFile(src: string, dest: string) {
+  try {
+    await fs.rename(src, dest);
+  } catch (err: any) {
+    if (err.code === "EXDEV") {
+      // Discos diferentes → copia e apaga
+      await fs.copyFile(src, dest);
+      await fs.unlink(src);
+    } else {
+      throw err;
+    }
+  }
+}
+
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Método não permitido" });
@@ -17,8 +31,7 @@ export default async function handler(req: any, res: any) {
 
   const { id: campaignId } = req.query;
 
-  // Processa o FormData
-  const form = new IncomingForm(); // Usa a classe importada diretamente
+  const form = new IncomingForm();
   const formData: any = await new Promise((resolve, reject) => {
     form.parse(req, (err: any, fields: any, files: any) => {
       if (err) return reject(err);
@@ -26,10 +39,9 @@ export default async function handler(req: any, res: any) {
     });
   });
 
-  // Extrai os dados do formulário e o arquivo opcional
   const name = formData.fields.name?.[0];
   const color = formData.fields.color?.[0];
-  const iconFile = formData.files.iconFile?.[0]; // O nome do campo deve ser o mesmo do frontend
+  const iconFile = formData.files.iconFile?.[0];
 
   console.log("Arquivo do ícone recebido:", !!iconFile);
 
@@ -57,21 +69,23 @@ export default async function handler(req: any, res: any) {
     await fs.mkdir(uploadDir, { recursive: true });
 
     if (iconFile) {
-      // Se o usuário enviou um arquivo
       const fileExtension = path.extname(iconFile.originalFilename);
       const newFileName = `${newCharId}${fileExtension}`;
       const destinationPath = path.join(uploadDir, newFileName);
-      await fs.rename(iconFile.filepath, destinationPath);
+
+      await moveFile(iconFile.filepath, destinationPath);
+
       iconPath = `/uploads/${campaignId}/${newFileName}`;
       console.log("Caminho temporário do arquivo:", iconFile.filepath);
       console.log("Caminho de destino:", destinationPath);
     } else {
-      // Se não, usa o ícone padrão
       const defaultIconPath = path.join(process.cwd(), "public", "default-icon.png");
       const newFileName = `${newCharId}.png`;
       const destinationPath = path.join(uploadDir, newFileName);
+
       await fs.copyFile(defaultIconPath, destinationPath);
       iconPath = `/uploads/${campaignId}/${newFileName}`;
+
       console.log("Usando ícone padrão. Caminho de destino:", destinationPath);
       const defaultIconExists = await fs
         .access(defaultIconPath)
@@ -94,7 +108,7 @@ export default async function handler(req: any, res: any) {
     await fs.writeFile(filePath, JSON.stringify(campanhas, null, 2));
 
     return res.status(201).json({ message: "Personagem adicionado com sucesso" });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro detalhado no servidor:", error);
     return res.status(500).json({ message: "Erro ao adicionar personagem", error: error.message });
   }

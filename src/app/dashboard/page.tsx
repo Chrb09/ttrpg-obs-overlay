@@ -7,7 +7,8 @@ import { AnimatePresence, motion } from "motion/react";
 import useSWR, { mutate } from "swr";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { infinite } from "swr/infinite";
+
+// TODO: adicionar funcionalidade de esconder os stats ( deixar como ?)
 
 /** ---------- Types ---------- */
 interface Stat {

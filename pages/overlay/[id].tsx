@@ -7,6 +7,8 @@ import "../../src/app/globals.css";
 import { Manufacturing_Consent } from "next/font/google";
 import { motion } from "motion/react";
 
+// TODO: arrumar o grid e talvez adicionar formas de customizá-lo
+
 const manufacturingConsent = Manufacturing_Consent({
   subsets: ["latin"],
   weight: "400",
@@ -333,8 +335,8 @@ export default function Overlay() {
                       {character.stats.map((stat) => {
                         if (stat.max === undefined) {
                           return (
-                            <div key={stat.name} className="flex flex-col items-center">
-                              <div className="w-fit font-extrabold">{stat.name}</div>
+                            <div key={stat.name} className="flex flex-col items-center ">
+                              <div className="w-fit font-extrabold  text-nowrap">{stat.name}</div>
                               {typeof stat.value !== "boolean" ? (
                                 <div
                                   className={`min-w-[3ch] text-center font-bold border-b-2 `}
@@ -432,7 +434,7 @@ export default function Overlay() {
                     if (stat.max === undefined) {
                       return (
                         <div key={stat.name} className="flex gap-[0.5em] items-center">
-                          <div className="w-fit font-bold">{stat.name}</div>
+                          <div className="w-fit font-bold text-nowrap">{stat.name}</div>
                           {typeof stat.value !== "boolean" ? (
                             <div
                               className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}

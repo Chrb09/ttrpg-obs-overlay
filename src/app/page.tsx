@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+// TODO: Criar essa página como guia do projeto
+
 export default function Home() {
   return (
     <div className="container min-h-dvh bg-[#FEF3F2] py-[5em] !px-[3.5em] max-md:!px-[2em]">

@@ -30,6 +30,7 @@ interface Character {
   icon: string;
   color: string;
   visible?: boolean;
+  secret?: boolean;
   stats: Stat[];
 }
 
@@ -49,6 +50,8 @@ export default function Overlay() {
   const [campaignId, setCampaignId] = useState<string | null>(null);
   const [characterIdFromPath, setCharacterIdFromPath] = useState<string | null>(null);
   const [variationFromPath, setVariationFromPath] = useState<string | null>(null);
+  const [colsFromPath, setColsFromPath] = useState<number | null>(null);
+  const [alignFromPath, setAlignFromPath] = useState<string | null>(null);
 
   // Query params úteis: token, layout, scale, safe, transparent
   const query = router.query;
@@ -58,7 +61,7 @@ export default function Overlay() {
     // extrai segmentos após /overlay/
     // ex.: /overlay/123/456?token=abc
     const path = router.asPath.split("?")[0];
-    const parts = path.split("/").filter(Boolean); // ['overlay','123','456']
+    const parts = path.split("/").filter(Boolean);
     const overlayIndex = parts.indexOf("overlay");
     if (overlayIndex >= 0) {
       const id = parts[overlayIndex + 1];
@@ -97,6 +100,8 @@ export default function Overlay() {
   // Se a dashboard passar um characterId no caminho /overlay/:campaignId/:characterId, renderizamos só esse personagem.
   const singleCharacterId = characterIdFromPath ?? (typeof query.characterId === "string" ? query.characterId : null);
   const variation = variationFromPath ?? (typeof query.variation === "string" ? query.variation : null);
+  const cols = colsFromPath ?? (typeof query.cols === "string" ? parseInt(query.cols) || null : null);
+  const align = alignFromPath ?? (typeof query.align === "string" ? query.align : null);
 
   // Filtra personagens por visible flag (se existir e for false, ocultar)
   let charactersToShow = (data.characters ?? []).filter((c) => c.visible !== false);
@@ -153,47 +158,47 @@ export default function Overlay() {
                 </div>
 
                 <div className="absolute left-[50%] top-[17%] font-bold text-[1.75em] translate-y-[-50%] translate-x-[-50%] text-center">
-                  {vigorStat?.value}
+                  {character.secret ? "?" : vigorStat?.value}
                 </div>
 
                 <div className="absolute left-[50%] top-[25.25%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[-50%] text-center">
-                  {vigorStat?.max}
+                  {character.secret ? "?" : vigorStat?.max}
                 </div>
 
                 <div className="absolute left-[24.5%] top-[25.5%] font-bold text-[1.3em] translate-y-[-50%] translate-x-[-50%] text-center">
-                  {clarezaStat?.value}
+                  {character.secret ? "?" : clarezaStat?.value}
                 </div>
 
                 <div className="absolute left-[18%] top-[29%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[-50%] text-center">
-                  {clarezaStat?.max}
+                  {character.secret ? "?" : clarezaStat?.max}
                 </div>
 
                 <div className="absolute right-[24.5%] top-[25.5%] font-bold text-[1.3em] translate-y-[-50%] translate-x-[50%] text-center">
-                  {espiritoStat?.value}
+                  {character.secret ? "?" : espiritoStat?.value}
                 </div>
 
                 <div className="absolute right-[18%] top-[29%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[50%] text-center">
-                  {espiritoStat?.max}
+                  {character.secret ? "?" : espiritoStat?.max}
                 </div>
 
                 <div className="absolute left-[50%] top-[70%] font-bold text-[1.85em] translate-y-[-50%] translate-x-[-50%] text-center">
-                  {gloriaStat?.value}
+                  {character.secret ? "?" : gloriaStat?.value}
                 </div>
 
                 <div className="absolute left-[24.5%] top-[65.5%] font-bold text-[1.3em] translate-y-[-50%] translate-x-[-50%] text-center">
-                  {guardaStat?.value}
+                  {character.secret ? "?" : guardaStat?.value}
                 </div>
 
                 <div className="absolute left-[29.5%] top-[69.5%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[-50%] text-center">
-                  {guardaStat?.max}
+                  {character.secret ? "?" : guardaStat?.max}
                 </div>
 
                 <div className="absolute right-[25%] top-[65.5%] font-bold text-[1.3em] translate-y-[-50%] translate-x-[50%] text-center">
-                  {armaduraStat?.value}
+                  {character.secret ? "?" : armaduraStat?.value}
                 </div>
 
                 <div className="absolute right-[30%] top-[69.5%] font-bold text-[0.85em] translate-y-[-50%] translate-x-[50%] text-center">
-                  {armaduraStat?.value}
+                  {character.secret ? "?" : armaduraStat?.value}
                 </div>
 
                 <div
@@ -233,7 +238,7 @@ export default function Overlay() {
 
                 {data.system === "Ordem Paranormal" && (
                   <div className="absolute left-[2.25em] bottom-[0.5em] bg-gray-800 text-amber-400 size-[2em] flex justify-center items-center rounded-full  font-bold text-[1.4em] z-30 translate-y-[-50%] translate-x-[-50%] text-center [text-shadow:_0px_0px_8px_#FFB900]">
-                    {esforcoStat?.value}
+                    {character.secret ? "?" : esforcoStat?.value}
                   </div>
                 )}
                 <div
@@ -271,7 +276,7 @@ export default function Overlay() {
                       />
 
                       <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] font-bold z-20 [text-shadow:_0px_0px_8px_rgba(255,255,255,0.9)]">
-                        {vidaStat?.value} / {vidaStat?.max}
+                        {character.secret ? "?" : vidaStat?.value} / {character.secret ? "?" : vidaStat?.max}
                       </div>
                     </div>
 
@@ -298,7 +303,7 @@ export default function Overlay() {
                         />
 
                         <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] font-bold z-20 [text-shadow:_0px_0px_8px_rgba(255,255,255,0.9)]">
-                          {sanidadeStat?.value} / {sanidadeStat?.max}
+                          {character.secret ? "?" : sanidadeStat?.value} / {character.secret ? "?" : sanidadeStat?.max}
                         </div>
                       </div>
                     ) : (
@@ -324,7 +329,8 @@ export default function Overlay() {
                         />
 
                         <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] font-bold z-20 [text-shadow:_0px_0px_8px_rgba(255,255,255,0.9)]">
-                          {determinacaoStat?.value} / {determinacaoStat?.max}
+                          {character.secret ? "?" : determinacaoStat?.value} /{" "}
+                          {character.secret ? "?" : determinacaoStat?.max}
                         </div>
                       </div>
                     )}
@@ -341,13 +347,13 @@ export default function Overlay() {
                                 <div
                                   className={`min-w-[3ch] text-center font-bold border-b-2 `}
                                   style={{ borderColor: character.color }}>
-                                  {stat.value}
+                                  {character.secret ? "?" : stat.value}
                                 </div>
                               ) : (
                                 <div
                                   className={`min-w-[3ch] text-center font-bold border-b-2 `}
                                   style={{ borderColor: character.color }}>
-                                  {stat.value ? "Sim" : "Não"}
+                                  {character.secret ? "?" : stat.value ? "Sim" : "Não"}
                                 </div>
                               )}
                             </div>
@@ -420,7 +426,7 @@ export default function Overlay() {
                             />
 
                             <div className="flex font-semibold z-20">
-                              {stat.value} / {stat.max}
+                              {character.secret ? "?" : stat.value} / {character.secret ? "?" : stat.max}
                             </div>
                           </div>
                         );
@@ -439,13 +445,13 @@ export default function Overlay() {
                             <div
                               className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
                               style={{ borderColor: character.color }}>
-                              {stat.value}
+                              {character.secret ? "?" : stat.value}
                             </div>
                           ) : (
                             <div
                               className={`min-w-[3ch] text-center font-bold text-gray-600 border-b-2 `}
                               style={{ borderColor: character.color }}>
-                              {stat.value ? "Sim" : "Não"}
+                              {character.secret ? "?" : stat.value ? "Sim" : "Não"}
                             </div>
                           )}
                         </div>

@@ -8,7 +8,7 @@ import useSWR, { mutate } from "swr";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// TODO: adicionar funcionalidade de esconder os stats ( deixar como ?)
+// TODO: adicionar forma de atualizar imagem pelo dashboard
 
 /** ---------- Types ---------- */
 interface Stat {
@@ -24,6 +24,7 @@ interface Character {
   icon: string;
   color: string;
   visible?: boolean;
+  secret?: boolean;
   stats: Stat[];
 }
 
@@ -79,11 +80,6 @@ export default function Dashboard() {
   const [newCharacterPreview, setNewCharacterPreview] = useState<string | null>(null);
   const [newCharacterData, setNewCharacterData] = useState({ name: "", color: "#ff0000" });
 
-  // overlay controls per-campaign (persisted in localStorage so stream PC can reuse)
-  const [campaignSettings, setCampaignSettings] = useState<
-    Record<number, { layout: string; scale: number; safeArea: number; transparent: boolean }>
-  >({});
-
   // refs & click outside
   const colorRef = useRef<HTMLDivElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -135,7 +131,7 @@ export default function Dashboard() {
     async (
       newValue: any,
       charId: number,
-      field: "name" | "color" | "visible" | "statValue" | "statMax",
+      field: "name" | "color" | "visible" | "secret" | "statValue" | "statMax",
       statName?: string
     ) => {
       if (!campanhas || !selectedCampaignId) return;
@@ -166,7 +162,7 @@ export default function Dashboard() {
                 }),
               };
             } else {
-              // name, color, visible, locked
+              // name, color, visible, secret
               updated = { ...updated, [field]: newValue };
             }
             return updated;
@@ -206,24 +202,50 @@ export default function Dashboard() {
     [selectedCampaign, handleCharacterDataChange]
   );
 
-  // copy overlay URL (with layout/scale settings)
-  const handleCopyUrl = useCallback(
-    async (campaignId: string | number, characterId?: string | number) => {
-      const base = `${window.location.origin}/overlay/${campaignId}${characterId ? `?characterId=${characterId}` : ""}`;
-      try {
-        await navigator.clipboard.writeText(base);
-        toast.success("URL copiada para a área de transferência!", {
-          position: "bottom-right",
-          autoClose: 3000,
-          transition: Slide,
-        });
-      } catch (err) {
-        console.error(err);
-        toast.error("Erro ao copiar a URL.", { position: "bottom-right", autoClose: 3000, transition: Slide });
-      }
+  // toggle visibility (quick action)
+  const toggleCharacterSecret = useCallback(
+    (charId: number) => {
+      const char = selectedCampaign?.characters.find((c) => c.id === charId);
+      if (!char) return;
+      handleCharacterDataChange(!char.secret, charId, "secret");
     },
-    [campaignSettings]
+    [selectedCampaign, handleCharacterDataChange]
   );
+
+  // copy overlay URL (with layout/scale settings)
+  const handleCopyUrl = useCallback(async (campaignId: string | number, characterId?: string | number) => {
+    const campanha = campanhas?.find((c) => c.id === campaignId) ?? null;
+    let cols = 1;
+
+    if (campanha?.characters.length === 1) {
+      cols = 1;
+    } else if (campanha?.characters.length === 2 || campanha?.characters.length === 4) {
+      cols = 2;
+    } else if (
+      campanha?.characters.length === 3 ||
+      campanha?.characters.length === 5 ||
+      campanha?.characters.length === 6
+    ) {
+      cols = 3;
+    } else {
+      cols = 4;
+    }
+
+    const base = `${window.location.origin}/overlay/${campaignId}?${
+      characterId ? `characterId=${characterId}&variation=1` : `variation=1&cols=${cols}&align=center`
+    }`;
+    try {
+      await navigator.clipboard.writeText(base);
+      toast.success("URL copiada para a área de transferência!", {
+        position: "bottom-right",
+        autoClose: 3000,
+        transition: Slide,
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao copiar a URL.", { position: "bottom-right", autoClose: 3000, transition: Slide });
+    }
+  }, []);
 
   /** ---------- Add campaign / character ---------- */
 
@@ -428,6 +450,18 @@ export default function Dashboard() {
                           <img
                             src={`${personagem.visible ? "show" : "hide"}.png`}
                             alt="Tornar Visível"
+                            className="size-[1em] object-cover"
+                            draggable={false}
+                          />
+                        </button>
+
+                        <button
+                          title={personagem.visible ? "Esconder stats" : "Mostrar stats"}
+                          className="font-bold  flex items-center justify-center rounded-full size-[1.80em] cursor-pointer transition-all duration-200 bg-gray-700 hover:bg-gray-800 hover:size-[2.10em]"
+                          onClick={() => toggleCharacterSecret(personagem.id)}>
+                          <img
+                            src={`${personagem.secret ? "lock" : "unlock"}.png`}
+                            alt="Tornar privado"
                             className="size-[1em] object-cover"
                             draggable={false}
                           />
@@ -671,7 +705,7 @@ export default function Dashboard() {
                           {campanha.id}
                         </div>
                         <div className="flex justify-between w-full">
-                          <div className="font-bold">Jogadores:</div>
+                          <div className="font-bold">Personagens:</div>
                           {campanha.characters.length}
                         </div>
 
